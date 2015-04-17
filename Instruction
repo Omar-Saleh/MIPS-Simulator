@@ -1,7 +1,7 @@
 class Instruction(object):
 	"""docstring for Instruction"""
 	def __init__(self):
-		self.noop = ['add' , 'sub' , 'and' , 'slt' , 'sltu' , 'nor' , 'sll' , 'srl']
+		self.noop = ['add' , 'sub' , 'and' , 'slt' , 'sltu' , 'nor' , 'sll' , 'srl' , 'jr']
 		self.reg = {'$0':"00000" ,'$zero':"00000" ,'$at':"00001" ,'$v0':"00010" ,
 					'$v1':"00011" ,'$a0':"00100" ,'$a1':"00101" ,'$a2':"00110" ,
 					'$a3':"00111" ,'$t0':"01000" ,'$t1':"01001" ,'$t2':"01010" ,'$t3':"01011" ,
@@ -12,6 +12,8 @@ class Instruction(object):
 					'$gp':"11100" ,'$sp':"11101" ,'$fp':"11110" ,'$ra':"11111"
 					}
 		self.op = {}
+		self.func = {'add':"100000" , 'and':"100100" , 'jr':"001000" , 'nor':"100111" , 'slt':"101010" ,
+					 'sltu':"101011" , 'srl':"000010" , 'sll':"000000" , 'sub':"100010"}
 		with open("text.txt" , "r+") as my_file:
 		#	t = my_file.readlines()
 			lines = my_file.read().splitlines()
@@ -25,7 +27,7 @@ class Instruction(object):
 	def change(self , instr):
 		instr = instr.split()
 		if instr[0] in self.noop:
-			ans =  "00000"  + self.reg[instr[1]] + self.reg[instr[2]] + self.reg[instr[3]] + "tobeDone"
+			ans =  "000000"  + self.reg[instr[1]] + self.reg[instr[2]] + self.reg[instr[3]] + self.func[instr[0]]
 			return ans
 
 
