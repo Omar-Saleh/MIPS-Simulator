@@ -19,26 +19,39 @@ class Instruction(object):
 					'sw':"101011" , 'sb':"101000" , 'lui':"001111" , 'j':"000010" , 'jal':"000010" , 'lb':""}
 		self.func = {'add':"100000" , 'and':"100100" , 'jr':"001000" , 'nor':"100111" , 'slt':"101010" ,
 					 'sltu':"101011" , 'srl':"000010" , 'sll':"000000" , 'sub':"100010" }
+		self.labels = {}
 		with open("text.txt" , "r+") as my_file:
-			lines = my_file.read().splitlines()	
-		instr = [self.translate(line.replace(',' , ' ')) for line in lines]
-		for m in instr:
-			print m
+			lines = my_file.read().splitlines()
+		instructions = [line.replace(',' , ' ') for line in lines]
+		self.scan(instructions)
+		self.instr = [self.translate(instr) for instr in instructions]
+		print self.instr
 			
-	
 
 	# Translates instructions into binary
 	def translate(self , instr):
-		instr = instr.split()
-		#Handling R-Type instructions
 		ans = ""
-		print instr
+
+		# Removing labels if there is any
+		split_Index = instr.find(':')
+		if split_Index > 0:
+			instr = list(instr)
+			instr[split_Index - 1] = ' '
+			instr[split_Index + 1] = ' '
+			instr = "".join(instr)
+		instr = instr.split()
+		if split_Index > 0:
+			instr = instr[instr.index(':') + 1::1]
+
+		# Handling R-Type instructions
 		if instr[0] in self.noop:
 			ans =  "000000"  + self.reg[instr[2]] + self.reg[instr[3]] + self.reg[instr[1]] + "00000" + self.func[instr[0]]
 
 		# Handling Jumps	
-		elif len(instr) == 2:
-			ans = self.op[instr[0]] + "label"
+		elif len(instr) == 2 and instr[0] in self.op:
+			if len(bin(self.labels[instr[1]] >> 2)) < 28:
+				ans = "0" * (28 - len(bin(self.labels[instr[1]] >> 2))) + bin(self.labels[instr[1]] >> 2).replace("0b" , "")
+			ans = self.op[instr[0]] + ans
 
 		elif instr[0] in self.op:
 			# Handling immediate aritmatic instructions
@@ -55,9 +68,25 @@ class Instruction(object):
 				ans = self.op[instr[0]] + self.reg[target[1]] + self.reg[instr[1]] + ans
 
 			# Handling branches
-			else :
-				pass
+			else:
+				ans = self.op[instr[0]] + self.reg[instr[1]] + self.reg[instr[2]] + instr[3]
 
 		return ans
 
+	# Index labels to their addresses
+	def scan(self , lines):
+		counter = -1
+		for line in lines:
+			if counter >= 0:
+				counter = counter + 1
+			if "start" in line.lower():
+				start = line.replace(':' , ' ').split()
+				#print start
+				self.pc = int(start[1] , 16)
+				counter = self.pc - 1
+			elif ':' in line:
+				self.labels[line.replace(':' , '').split()[0]] = counter
+
 i = Instruction()
+print i.labels
+#print i.instr
