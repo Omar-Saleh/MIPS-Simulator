@@ -1,3 +1,9 @@
+.data
+1 2 
+4 5
+7 1
+end
+
 start: 0x1
 add $s2 , $s1 , $s1
 add $s1 , $s2 , $s1

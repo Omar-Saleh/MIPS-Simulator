@@ -20,18 +20,36 @@ class Instruction(object):
 		self.func = {'add':"100000" , 'and':"100100" , 'jr':"001000" , 'nor':"100111" , 'slt':"101010" ,
 					 'sltu':"101011" , 'srl':"000010" , 'sll':"000000" , 'sub':"100010" }
 		self.labels = {}
+		self.memory = {}
+
 		with open("text.txt" , "r+") as my_file:
-			lines = my_file.read().splitlines()
+			lines = my_file.read().splitlines()	
+
+		#finding where is .data	
+		for i in range(len(lines)):
+			if ".data" in lines[i]:
+				begin_data = i + 1
+				break
+
+		#reading data	
+		i = begin_data	
+		while "end" not in lines[i]:
+			info = lines[i].split()
+			self.memory[info[0]] = info[1]
+			i = i + 1
+
+		print self.memory
+
 		instructions = [line.replace(',' , ' ') for line in lines]
 		self.scan(instructions)
 		self.instr = [self.translate(instr) for instr in instructions]
 		print self.instr
-			
+		for m in instr:
+			print m
 
 	# Translates instructions into binary
 	def translate(self , instr):
 		ans = ""
-
 		# Removing labels if there is any
 		split_Index = instr.find(':')
 		if split_Index > 0:
@@ -89,4 +107,3 @@ class Instruction(object):
 
 i = Instruction()
 print i.labels
-#print i.instr
