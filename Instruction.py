@@ -19,11 +19,42 @@ class Instruction(object):
 					'sw':"101011" , 'sb':"101000" , 'lui':"001111" , 'j':"000010" , 'jal':"000010" , 'lb':""}
 		self.func = {'add':"100000" , 'and':"100100" , 'jr':"001000" , 'nor':"100111" , 'slt':"101010" ,
 					 'sltu':"101011" , 'srl':"000010" , 'sll':"000000" , 'sub':"100010" }
+
+		self.memory = {}
+
+
+
 		with open("text.txt" , "r+") as my_file:
 			lines = my_file.read().splitlines()	
+
+		#finding where is .data	
+		for i in range(len(lines)):
+			if ".data" in lines[i]:
+				begin_data = i + 1
+				break
+
+		#reading data	
+		i = begin_data	
+		while "end" not in lines[i]:
+			info = lines[i].split()
+			self.memory[info[0]] = info[1]
+			i = i + 1
+
+		print self.memory
+
+
+
+
+				
+
+
+
+
 		instr = [self.translate(line.replace(',' , ' ')) for line in lines]
 		for m in instr:
 			print m
+
+		
 			
 	
 
@@ -32,12 +63,12 @@ class Instruction(object):
 		instr = instr.split()
 		#Handling R-Type instructions
 		ans = ""
-		print instr
+		#print instr
 		if instr[0] in self.noop:
 			ans =  "000000"  + self.reg[instr[2]] + self.reg[instr[3]] + self.reg[instr[1]] + "00000" + self.func[instr[0]]
 
 		# Handling Jumps	
-		elif len(instr) == 2:
+		elif len(instr) == 2 and instr[0] in self.op:
 			ans = self.op[instr[0]] + "label"
 
 		elif instr[0] in self.op:
@@ -59,5 +90,7 @@ class Instruction(object):
 				pass
 
 		return ans
+
+
 
 i = Instruction()

@@ -1,5 +1,5 @@
-add $s2 , $s1 , $s1
-add $s1 , $s2 , $s1
-addi $s1 , $s2 , 12
-lw $t0, 0($t1)
-j exit
+.data
+1 2 
+4 5
+7 1
+end
