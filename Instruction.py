@@ -25,6 +25,7 @@ class Instruction(object):
 		with open("text.txt" , "r+") as my_file:
 			lines = my_file.read().splitlines()	
 
+		print lines
 		#finding where is .data	
 		for i in range(len(lines)):
 			if ".data" in lines[i]:
@@ -33,22 +34,20 @@ class Instruction(object):
 
 		#reading data	
 		i = begin_data	
-		while "end" not in lines[i]:
-			info = lines[i].split()
-			self.memory[info[0]] = info[1]
+		while "start" not in lines[i].lower():
+			if lines[i]:
+				info = lines[i].split()
+				self.memory[info[0]] = info[1]
 			i = i + 1
 
-		print self.memory
-
-		instructions = [line.replace(',' , ' ') for line in lines]
+		instructions = [lines[i].replace(',' , ' ') for i in range(i , len(lines))]
 		self.scan(instructions)
-		self.instr = [self.translate(instr) for instr in instructions]
+		self.instr = [self.translate(instructions[i] , i - 1) for i in range(1 , len(instructions))]
 		print self.instr
-		for m in instr:
-			print m
-
+		for m in self.instr:
+			pass
 	# Translates instructions into binary
-	def translate(self , instr):
+	def translate(self , instr , count):
 		ans = ""
 		# Removing labels if there is any
 		split_Index = instr.find(':')
@@ -68,8 +67,8 @@ class Instruction(object):
 		# Handling Jumps	
 		elif len(instr) == 2 and instr[0] in self.op:
 			if len(bin(self.labels[instr[1]] >> 2)) < 28:
-				ans = "0" * (28 - len(bin(self.labels[instr[1]] >> 2))) + bin(self.labels[instr[1]] >> 2).replace("0b" , "")
-			ans = self.op[instr[0]] + ans
+				ans = "0" * (28 - len(bin(self.labels[instr[1]] >> 2)))
+			ans = self.op[instr[0]] + ans + bin(self.labels[instr[1]] >> 2).replace("0b" , "")
 
 		elif instr[0] in self.op:
 			# Handling immediate aritmatic instructions
@@ -82,28 +81,32 @@ class Instruction(object):
 			elif instr[0] == 'lw' or instr[0] == 'sw' or instr[0] ==  'lbu' or instr[0] == 'sb' or instr[0] == 'lb' or instr[0] == 'lui':
 				target = instr[2].replace('(' , ' ').replace(')' , ' ').split()
 				if len(bin(int(target[0]))) < 18:
-					ans = "0" * (18 - len(bin(int(target[0])))) + bin(int(target[0])).replace("0b" , "")
-				ans = self.op[instr[0]] + self.reg[target[1]] + self.reg[instr[1]] + ans
+					ans = "0" * (18 - len(bin(int(target[0]))))
+				ans = self.op[instr[0]] + self.reg[target[1]] + self.reg[instr[1]] + ans + bin(int(target[0])).replace("0b" , "")
 
 			# Handling branches
 			else:
-				ans = self.op[instr[0]] + self.reg[instr[1]] + self.reg[instr[2]] + instr[3]
-
+				ans = self.op[instr[0]] + self.reg[instr[1]] + self.reg[instr[2]] + calculateOffSet(self.labels[instr[3]] - self.pc - (count * 4) - 4)
 		return ans
 
 	# Index labels to their addresses
 	def scan(self , lines):
-		counter = -1
+		counter = -5
 		for line in lines:
-			if counter >= 0:
-				counter = counter + 1
+			if counter >= -4:
+				counter = counter + 4
 			if "start" in line.lower():
 				start = line.replace(':' , ' ').split()
 				#print start
 				self.pc = int(start[1] , 16)
-				counter = self.pc - 1
+				counter = self.pc - 4
 			elif ':' in line:
 				self.labels[line.replace(':' , '').split()[0]] = counter
 
+def calculateOffSet(n):
+	if n >= 0:
+		return "0" * (18 - len(bin(n))) + bin(n).replace('0b' , '')
+	else:
+		return bin((1 << 32) - n).replace('0b' , '')
 i = Instruction()
 print i.labels
