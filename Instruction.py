@@ -5,7 +5,7 @@ class Instruction(object):
 		I-type: addi , beq , bne , lw , lbu , sw , sb , lui
 		J-type: j , jal
 	"""
-	def __init__(self):
+	def __init__(self , filename):
 		self.noop = ['add' , 'sub' , 'and' , 'slt' , 'sltu' , 'nor' , 'sll' , 'srl' , 'jr']
 		self.reg = {'$0':"00000" ,'$zero':"00000" ,'$at':"00001" ,'$v0':"00010" ,
 					'$v1':"00011" ,'$a0':"00100" ,'$a1':"00101" ,'$a2':"00110" ,
@@ -22,10 +22,10 @@ class Instruction(object):
 		self.labels = {}
 		self.memory = {}
 
-		with open("text.txt" , "r+") as my_file:
+		with open(filename , "r+") as my_file:
 			lines = my_file.read().splitlines()	
 
-		print lines
+		#print lines
 		#finding where is .data	
 		for i in range(len(lines)):
 			if ".data" in lines[i]:
@@ -43,9 +43,12 @@ class Instruction(object):
 		instructions = [lines[i].replace(',' , ' ') for i in range(i , len(lines))]
 		self.scan(instructions)
 		self.instr = [self.translate(instructions[i] , i - 1) for i in range(1 , len(instructions))]
-		print self.instr
-		for m in self.instr:
-			pass
+		# Adding translated instructions to the main memory starting from the pc value specified by the user
+		for i in range(len(self.instr)):
+			self.memory[self.pc + (i  * 4)] = self.instr[i]
+
+
+
 	# Translates instructions into binary
 	def translate(self , instr , count):
 		ans = ""
@@ -103,10 +106,18 @@ class Instruction(object):
 			elif ':' in line:
 				self.labels[line.replace(':' , '').split()[0]] = counter
 
+	def getMemory(self):
+		return self.memory
+
+
 def calculateOffSet(n):
 	if n >= 0:
 		return "0" * (18 - len(bin(n))) + bin(n).replace('0b' , '')
 	else:
-		return bin((1 << 32) - n).replace('0b' , '')
-i = Instruction()
-print i.labels
+		return bin(((1 << 32) - 1) & n).replace('0b' , '')
+
+
+# i = Instruction()
+# print i.labels
+#print calculateOffSet(-5)
+#print int(calculateOffSet(-5) , 2)
