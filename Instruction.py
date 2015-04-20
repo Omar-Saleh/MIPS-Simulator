@@ -28,7 +28,7 @@ class Instruction(object):
 		#print lines
 		#finding where is .data	
 		for i in range(len(lines)):
-			if ".data" in lines[i]:
+			if "data" in lines[i]:
 				begin_data = i + 1
 				break
 
@@ -46,8 +46,6 @@ class Instruction(object):
 		# Adding translated instructions to the main memory starting from the pc value specified by the user
 		for i in range(len(self.instr)):
 			self.memory[self.pc + (i  * 4)] = self.instr[i]
-
-
 
 	# Translates instructions into binary
 	def translate(self , instr , count):
@@ -117,7 +115,7 @@ def calculateOffSet(n):
 		return bin(((1 << 32) - 1) & n).replace('0b' , '')
 
 
-# i = Instruction()
+#i = Instruction("text.txt")
 # print i.labels
 #print calculateOffSet(-5)
 #print int(calculateOffSet(-5) , 2)

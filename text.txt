@@ -4,7 +4,7 @@
 7 1
 
 .start: 010
-add $s2 , $s1 , $s1
+add $t0 , $t1 , $t2
 add $s1 , $s2 , $s1
 addi $s1 , $s2 , 12
 beq $s1 , $s2 , exit
