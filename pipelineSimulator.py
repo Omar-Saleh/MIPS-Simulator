@@ -5,19 +5,32 @@ class pipelineSimulator(object):
 	def __init__(self):
 		filename = raw_input("Please Write the name of the desired file to execute : ")
 		i = Instruction(filename)
-		memory = i.getMemory()
+		self.memory = i.getMemory()
 		cycles = 0
 		self.isDone = False
 		self.pc = i.pc
+		self.PCSrc = 0
 		executeMem = executeMemReg()
 		memWrite = memWriteReg()
 		executeMem.advance(memWrite)
 
 
 
+	def DataStage(self):
+		if(executeMem.memWrite):
+			memory[int(executeMem.ALUResult , 2)] = int(executeMem.regValue , 2)
+		elif(executeMem.memRead):
+			memWrite.memRead = bin(memory[int(executeMem.ALUResult , 2)]).replace('0b' , '')
+		elif branch & int(executeMem.ALUResult , 2):
+			self.PCSrc = 1
 
 
-
+	def WriteBackStage(self):
+		if(memWrite.regWrite):
+			if(memWrite.memToReg):
+				self.reg[memWrite.rd] = int(memWrite.ALUResult , 2)
+			else:
+				self.reg[memWrite.rd] = int(memWrite.memRead , 2)
 
 
 class executeMemReg(object):
@@ -25,8 +38,8 @@ class executeMemReg(object):
 	def __init__(self):
 		self.branchAddre = ""
 		self.zero = 0
-		self.ALUResult = 0
-		self.regValue = 0
+		self.ALUResult = ""
+		self.regValue = ""
 		self.rd = ""
 		self.branch = 0
 		self.memWrite = 0
@@ -45,8 +58,8 @@ class executeMemReg(object):
 class memWriteReg(object):
 	"""Memory/WriteBack Register1"""
 	def __init__(self):
-		self.ALUResult = 0
-		self.memoryRead = 0
+		self.ALUResult = ""
+		self.memoryRead = ""
 		self.rd = ""
 		self.regWrite = 0
 		self.memToReg = 0

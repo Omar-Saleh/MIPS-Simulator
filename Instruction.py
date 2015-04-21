@@ -107,6 +107,9 @@ class Instruction(object):
 	def getMemory(self):
 		return self.memory
 
+	def getRegMap(self):
+		return self.reg
+
 
 def calculateOffSet(n):
 	if n >= 0:
