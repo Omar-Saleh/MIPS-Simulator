@@ -3,20 +3,23 @@ from Instruction import *
 class pipelineSimulator(object):
 	"""docstring for pipelineSimulator"""
 	def __init__(self):
-		filename = raw_input("Please Write the name of the desired file to execute : ")
-		i = Instruction(filename)
-		self.memory = i.getMemory()
+	#	filename = raw_input("Please Write the name of the desired file to execute : ")
+	#	i = Instruction(filename)
+	#	self.memory = i.getMemory()
 		cycles = 0
 		self.isDone = False
-		self.pc = i.pc
+	#	self.pc = i.pc
 		self.PCSrc = 0
 		fetchDec = FetchDecReg()
-		decExReg = DecExReg()
-		executeMem = ExecuteMemReg()
-		memWrite = MemWriteReg()
-		fetchDec.advance(decExReg)
-		decExReg.advance(executeMem)
-		executeMem.advance(memWrite)
+		print fetchDec
+		self.decExReg = DecExReg()
+		print self.decExReg
+		self.executeMem = ExecuteMemReg()
+		print self.executeMem
+		self.memWrite = MemWriteReg()
+		print self.memWrite
+		self.execStage()
+	#	print self.executeMem.regValue
 
 
 	def fetchStage(self):
@@ -29,17 +32,27 @@ class pipelineSimulator(object):
 
 
 	def execStage(self):
-		pass
+		if self.decExReg.ALUSrc:
+			src2 = self.decExReg.offset
+		else:
+			src2 = self.decExReg.reg2
 
+		if self.decExReg.RegDst:
+			executeMem.rd = self.decExReg.rd
+		else:
+			self.executeMem.rd = self.decExReg.rt
+		self.executeMem.regValue = self.decExReg.reg2
+		self.executeMem.branchAddre = bin((int(self.decExReg.offset , 2) << 2) + int(self.decExReg.incPC , 2)).replace('0b' , '')
+		self.executeMem.ALUResult = ALU(self.decExReg.ALUOP , self.decExReg.reg1 , src2)
+		self.executeMem.Zero = Zero(self.decExReg.reg1 , src2)
 
 	def dataStage(self):
-		if(executeMem.memWrite):
-			memory[int(executeMem.ALUResult , 2)] = int(executeMem.regValue , 2)
-		elif(executeMem.memRead):
-			memWrite.memRead = bin(memory[int(executeMem.ALUResult , 2)]).replace('0b' , '')
-		elif branch & int(executeMem.ALUResult , 2):
+		if self.executeMem.branch & self.executeMem.zero:
 			self.PCSrc = 1
-
+		if(self.executeMem.memWrite):
+			memory[int(self.executeMem.ALUResult , 2)] = int(self.executeMem.regValue , 2)
+		elif(self.executeMem.memRead):
+			memWrite.memRead = bin(memory[int(self.executeMem.ALUResult , 2)]).replace('0b' , '')
 
 	def writeBackStage(self):
 		if(memWrite.regWrite):
@@ -61,17 +74,21 @@ class FetchDecReg(object):
 		decExReg.incPC = self.incPC
 
 
+	def __repr__(self):
+		return "--IF/ID Register--\nInstruction:%s\nIncremented Pc:%s\n" % (self.instruction , self.incPC)
+
+
 
 
 class DecExReg(object):
 	"""docstring for"""
 	def __init__(self):
-		self.incPC = ""
-		self.reg1 = ""
-		self.reg2 = ""
-		self.offset = ""
-		self.rd = ""
-		self.rt = ""
+		self.incPC = "010"
+		self.reg1 = "110"
+		self.reg2 = "111"
+		self.offset = "1111"
+		self.rd = "01010"
+		self.rt = "01010"
 		self.memToReg = 0
 		self.regWrite = 0
 		self.branch = 0
@@ -89,15 +106,18 @@ class DecExReg(object):
 		executeMemReg.branch = self.branch
 		executeMemReg.memRead = self.memRead
 
+	def __repr__(self):
+		return "--ID/EXE Register--\nIncremented Pc:%s\nRegister 1 Value:%s\nRegister 2 Value:%s\nOffset:%s\nrt field:%s\nrd field:%s\nmemToReg:%d\nregWrite:%d\nBranch:%d\nmemWrite:%d\nmemRead:%d\nALUSrc:%d\nRegDst:%d\nALUOP:%s\n" % (self.incPC , self.reg1 , self.reg2 , self.offset , self.rd , self.rt , self.memToReg , self.regWrite , self.branch , self.memWrite , self.memRead , self.ALUSrc , self.RegDst , self.ALUOP)
+
 
 class ExecuteMemReg(object):
 	"""Execute/Memory Register"""
 	def __init__(self):
 		self.branchAddre = ""
-		self.zero = 0
 		self.ALUResult = ""
 		self.regValue = ""
 		self.rd = ""
+		self.zero = 0
 		self.branch = 0
 		self.memWrite = 0
 		self.memRead = 0
@@ -111,6 +131,9 @@ class ExecuteMemReg(object):
 		memWriteReg.memToReg = self.memToReg
 
 
+	def __repr__(self):
+		return "--EXE/MEM Register--\nBranch Address:%s\nALU Result:%s\nRegister Value:%s\nTarget Register:%s\nZero:%d\nBranch:%d\nMem Write:%d\nMem Read:%d\nReg Write:%d\nMem To Register:%d\n" % (self.branchAddre , self.ALUResult ,self.regValue ,self.rd,self.zero,self.branch,self.memWrite,self.memRead,self.regWrite,self.memToReg)
+
 
 class MemWriteReg(object):
 	"""Memory/WriteBack Register"""
@@ -120,6 +143,9 @@ class MemWriteReg(object):
 		self.rd = ""
 		self.regWrite = 0
 		self.memToReg = 0
+
+	def __repr__(self):
+		return "--MEM/WB Register--\nALU Result:%s\nMemory Read:%s\nTarget Register:%s\nReg Write:%d\nMem To Reg:%d\n" % (self.ALUResult , self.memoryRead , self.rd , self.regWrite , self.memToReg)
 
 
 def ALU(ALUcontrol ,src1 , src2):
@@ -138,5 +164,11 @@ def ALU(ALUcontrol ,src1 , src2):
 			return "0"
 	else:
 		return bin(not(int(src1 , 2) | int(src2 , 2))).replace('0b' , '')
+
+def Zero(src1 , src2):
+	if int(src2 , 2) - int(src1 , 2) == 0:
+		return 1
+	return 0
+
 
 p = pipelineSimulator()
