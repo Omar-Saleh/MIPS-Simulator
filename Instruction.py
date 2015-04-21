@@ -115,10 +115,14 @@ def calculateOffSet(n):
 	if n >= 0:
 		return "0" * (18 - len(bin(n))) + bin(n).replace('0b' , '')
 	else:
-		return bin(((1 << 32) - 1) & n).replace('0b' , '')
+		return  "1" * (19 - len(bin(~((n * -1) - 1)))) + bin(~((n * -1) - 1)).replace('0b' , '').replace('-' , '')
 
 
 #i = Instruction("text.txt")
 # print i.labels
-#print calculateOffSet(-5)
-#print int(calculateOffSet(-5) , 2)
+x = calculateOffSet(-5)
+print (int(x , 2))
+# print len(calculateOffSet(-5))
+# print int(calculateOffSet(-5) , 2)
+
+# print ~x + 1
