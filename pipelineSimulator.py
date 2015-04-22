@@ -36,13 +36,12 @@ class pipelineSimulator(object):
 			src2 = self.decExReg.offset
 		else:
 			src2 = self.decExReg.reg2
-
 		if self.decExReg.RegDst:
 			executeMem.rd = self.decExReg.rd
 		else:
 			self.executeMem.rd = self.decExReg.rt
 		self.executeMem.regValue = self.decExReg.reg2
-		self.executeMem.branchAddre = bin((int(self.decExReg.offset , 2) << 2) + int(self.decExReg.incPC , 2)).replace('0b' , '')
+		self.executeMem.branchAddre = calculateComplement((calculateNum(self.decExReg.offset) << 2) + int(self.decExReg.incPC , 2))
 		self.executeMem.ALUResult = ALU(self.decExReg.ALUOP , self.decExReg.reg1 , src2)
 		self.executeMem.Zero = Zero(self.decExReg.reg1 , src2)
 
@@ -50,17 +49,17 @@ class pipelineSimulator(object):
 		if self.executeMem.branch & self.executeMem.zero:
 			self.PCSrc = 1
 		if(self.executeMem.memWrite):
-			memory[int(self.executeMem.ALUResult , 2)] = int(self.executeMem.regValue , 2)
+			memory[int(self.executeMem.ALUResult , 2)] = calculateNum(self.executeMem.regValue)
 		elif(self.executeMem.memRead):
-			memWrite.memRead = bin(memory[int(self.executeMem.ALUResult , 2)]).replace('0b' , '')
+			memWrite.memRead = calculateComplement(memory[int(self.executeMem.ALUResult , 2)])
 
 	def writeBackStage(self):
 		if(memWrite.regWrite):
 			if(memWrite.memToReg):
-				self.reg[memWrite.rd] = int(memWrite.ALUResult , 2)
+				self.reg[memWrite.rd] = calculateNum(memWrite.ALUResult)
 			else:	
 				if "00000" not in memWrite.rd:
-					self.reg[memWrite.rd] = int(memWrite.memRead , 2)
+					self.reg[memWrite.rd] = calculateComplement(memWrite.memRead)
 
 
 
@@ -150,25 +149,43 @@ class MemWriteReg(object):
 
 def ALU(ALUcontrol ,src1 , src2):
 	if "0000" in ALUcontrol:
-		return bin(int(src2 , 2) & int(src1 , 2)).replace('0b' , '')
+		return calculateComplement(calculateNum(src2) & calculateNum(src1))
 	elif "0001" in ALUcontrol:
-		return bin(int(src2 , 2) | int(src1 , 2)).replace('0b' , '')
+		return calculateComplement(calculateNum(src2) | calculateNum(src1))
 	elif "0010" in ALUcontrol:
-		return bin(int(src2 , 2) + int(src1 , 2)).replace('0b' , '')
+		return calculateComplement(calculateNum(src2) + calculateNum(src1))
 	elif "0110" in ALUcontrol:
-		return bin(int(src2 , 2) - int(src1 , 2)).replace('0b' , '')
+		return calculateComplement(calculateNum(src2) - calculateNum(src1))
 	elif "0111" in ALUcontrol:
-		if int(src2 , 2) > int(src1 , 2):
+		if calculateNum(src2) > calculateNum(src1):
 			return "1"
 		else:
 			return "0"
 	else:
-		return bin(not(int(src1 , 2) | int(src2 , 2))).replace('0b' , '')
+		return calculateComplement(~(calculateNum(src1) | calculateNum(src2)))
 
 def Zero(src1 , src2):
-	if int(src2 , 2) - int(src1 , 2) == 0:
+	if calculateNum(src2) - calculateNum(src1) == 0:
 		return 1
 	return 0
 
 
-p = pipelineSimulator()
+# Handling Negative values
+def calculateComplement(num):
+	print num
+	return (format(num if num >= 0 else (1 << 32) + num, '032b'))
+
+
+def calculateNum(num):
+	#print num
+	if num[0] == '1':
+		newNum = num[num.find('0')::]
+		n = ""
+		for i in range(len(newNum)):
+			n += "1" if newNum[i] == '0' else "0"
+		return (int(n , 2) + 1) * -1 
+	else:
+		return int(num , 2)
+
+#p = pipelineSimulator()
+print ALU("0110" , "000001" , "0000010")

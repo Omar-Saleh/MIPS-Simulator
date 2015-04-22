@@ -74,16 +74,13 @@ class Instruction(object):
 		elif instr[0] in self.op:
 			# Handling immediate aritmatic instructions
 			if instr[0] == 'addi':
-				if len(bin(int(instr[3]))) < 18:
-					ans = "0" * (18 - len(bin(int(instr[3])))) + bin(int(instr[3])).replace("0b" , "")
-				ans = self.op[instr[0]] + self.reg[instr[2]] + self.reg[instr[1]] + ans
+				print calculateOffSet(int(instr[3]))
+				ans = self.op[instr[0]] + self.reg[instr[2]] + self.reg[instr[1]] + calculateOffSet(int(instr[3]))
 
 			# Handling Memory Loads/Stores
 			elif instr[0] == 'lw' or instr[0] == 'sw' or instr[0] ==  'lbu' or instr[0] == 'sb' or instr[0] == 'lb' or instr[0] == 'lui':
 				target = instr[2].replace('(' , ' ').replace(')' , ' ').split()
-				if len(bin(int(target[0]))) < 18:
-					ans = "0" * (18 - len(bin(int(target[0]))))
-				ans = self.op[instr[0]] + self.reg[target[1]] + self.reg[instr[1]] + ans + bin(int(target[0])).replace("0b" , "")
+				ans = self.op[instr[0]] + self.reg[target[1]] + self.reg[instr[1]] + ans + calculateOffSet(int(target[0]))
 
 			# Handling branches
 			else:
@@ -111,18 +108,24 @@ class Instruction(object):
 		return self.reg
 
 
-def calculateOffSet(n):
-	if n >= 0:
-		return "0" * (18 - len(bin(n))) + bin(n).replace('0b' , '')
-	else:
-		return  "1" * (19 - len(bin(~((n * -1) - 1)))) + bin(~((n * -1) - 1)).replace('0b' , '').replace('-' , '')
+def calculateOffSet(num):
+	return (format(num if num >= 0 else (1 << 16) + num, '016b'));
 
 
 #i = Instruction("text.txt")
+#print i.memory
 # print i.labels
-x = calculateOffSet(-5)
-print (int(x , 2))
-# print len(calculateOffSet(-5))
-# print int(calculateOffSet(-5) , 2)
+# x = calculateOffSet(7)
+# test = x[x.find('0')::]
+# print x
+# print test
+# ans = ""
+# for i in range(len(test)):
+# 	ans += "1" if test[i] == '0' else "0"
+# print ans
+# print (int(ans , 2)) + 1
 
-# print ~x + 1
+# # print len(calculateOffSet(-5))
+# # print int(calculateOffSet(-5) , 2)
+
+# # print ~x + 1
