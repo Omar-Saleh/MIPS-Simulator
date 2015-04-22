@@ -4,11 +4,11 @@ class pipelineSimulator(object):
 	"""docstring for pipelineSimulator"""
 	def __init__(self):
 	#	filename = raw_input("Please Write the name of the desired file to execute : ")
-	#	i = Instruction(filename)
-	#	self.memory = i.getMemory()
+		i = Instruction(filename)
+		self.memory = i.getMemory()
 		cycles = 0
 		self.isDone = False
-	#	self.pc = i.pc
+		self.pc = i.pc
 		self.PCSrc = 0
 		fetchDec = FetchDecReg()
 		print fetchDec
@@ -23,7 +23,14 @@ class pipelineSimulator(object):
 
 
 	def fetchStage(self):
-		pass
+		instr = self.memory.get(self.getPC)
+		fetchDec.instruction = instr
+		self.pc = self.pc + 4
+		binaryPC = calculateComplement(self.pc)
+		self.fetchDec.incPC = binaryPC
+
+
+
 
 
 	def decodeStage(self):	

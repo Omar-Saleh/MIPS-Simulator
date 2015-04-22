@@ -21,6 +21,7 @@ class Instruction(object):
 					 'sltu':"101011" , 'srl':"000010" , 'sll':"000000" , 'sub':"100010" }
 		self.labels = {}
 		self.memory = {}
+		
 
 		with open(filename , "r+") as my_file:
 			lines = my_file.read().splitlines()	
@@ -106,6 +107,9 @@ class Instruction(object):
 
 	def getRegMap(self):
 		return self.reg
+
+	def getPC(self):
+		return self.PC
 
 
 def calculateOffSet(num):
