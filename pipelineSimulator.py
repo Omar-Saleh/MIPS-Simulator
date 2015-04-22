@@ -164,8 +164,8 @@ def ALU(ALUcontrol ,src1 , src2):
 	else:
 		return calculateComplement(~(calculateNum(src1) | calculateNum(src2)))
 
-def Zero(src1 , src2):
-	if calculateNum(src2) - calculateNum(src1) == 0:
+def zero(src1 , src2):
+	if ALU("0110" , src1 , src2) == 0:
 		return 1
 	return 0
 

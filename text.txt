@@ -8,5 +8,5 @@ add $t0 , $t1 , $t2
 add $s1 , $s2 , $s1
 addi $s1 , $s2 , 12
 beq $s1 , $s2 , exit
-exit : lw $t0, 0($t1)
+exit : lw $t0, -1($t1)
 j exit
