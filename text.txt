@@ -6,6 +6,7 @@
 .start: 010
 add $t0 , $t1 , $t2
 add $s1 , $s2 , $s1
+sll $t1 , $s3 , 2
 addi $s1 , $s2 , 12
 beq $s1 , $s2 , exit
 exit : lw $t0, -1($t1)

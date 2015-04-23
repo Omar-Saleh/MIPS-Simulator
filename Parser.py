@@ -1,4 +1,4 @@
-class Instruction(object):
+class Parser(object):
 	"""Parsing Instructions and converting them into binary and storing them in array to be used by the simulator
 	Supported Instructions:
 		R-type: add , sub , and , slt , sltu , nor , sll , srl , jr
@@ -64,7 +64,12 @@ class Instruction(object):
 
 		# Handling R-Type instructions
 		if instr[0] in self.noop:
-			ans =  "000000"  + self.reg[instr[2]] + self.reg[instr[3]] + self.reg[instr[1]] + "00000" + self.func[instr[0]]
+			if "srl" in instr[0] or "sll" in instr[0]:
+				ans = "000000" + "00000" + self.reg[instr[2]] +  self.reg[instr[1]] + format(int(instr[3]) , '05b') + self.func[instr[0]]
+		#		print int(self.reg[instr[1]] , 2)
+		#		print ans
+			else:
+				ans =  "000000"  + self.reg[instr[2]] + self.reg[instr[3]] + self.reg[instr[1]] + "00000" + self.func[instr[0]]
 
 		# Handling Jumps	
 		elif len(instr) == 2 and instr[0] in self.op:
@@ -75,7 +80,7 @@ class Instruction(object):
 		elif instr[0] in self.op:
 			# Handling immediate aritmatic instructions
 			if instr[0] == 'addi':
-				print calculateOffSet(int(instr[3]))
+			#	print calculateOffSet(int(instr[3]))
 				ans = self.op[instr[0]] + self.reg[instr[2]] + self.reg[instr[1]] + calculateOffSet(int(instr[3]))
 
 			# Handling Memory Loads/Stores
@@ -116,7 +121,7 @@ def calculateOffSet(num):
 	return (format(num if num >= 0 else (1 << 16) + num, '016b'));
 
 
-#i = Instruction("text.txt")
+i = Parser("text.txt")
 #print i.memory
 # print i.labels
 # x = calculateOffSet(7)

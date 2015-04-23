@@ -1,30 +1,28 @@
-from Instruction import *
+from Parser import *
 
 class pipelineSimulator(object):
 	"""docstring for pipelineSimulator"""
 	def __init__(self):
 	#	filename = raw_input("Please Write the name of the desired file to execute : ")
-		i = Instruction(filename)
+		i = Parser(filename)
 		self.memory = i.getMemory()
-		cycles = 0
+		self.cycles = 0
 		self.isDone = False
-		self.pc = i.pc
+		self.stall = 0
+		self.pc = calculateComplement(i.pc)
 		self.PCSrc = 0
-		fetchDec = FetchDecReg()
-		print fetchDec
+		self.fetchDec = FetchDecReg()
 		self.decExReg = DecExReg()
-		print self.decExReg
 		self.executeMem = ExecuteMemReg()
-		print self.executeMem
 		self.memWrite = MemWriteReg()
-		print self.memWrite
 		self.execStage()
 	#	print self.executeMem.regValue
 
 
 	def fetchStage(self):
-		instr = self.memory.get(self.getPC)
-		fetchDec.instruction = instr
+		pc = calculateNum(self.pc)
+		instr = self.memory.get(pc)
+		self.fetchDec.instruction = instr
 		self.pc = self.pc + 4
 		binaryPC = calculateComplement(self.pc)
 		self.fetchDec.incPC = binaryPC
@@ -39,6 +37,7 @@ class pipelineSimulator(object):
 
 
 	def execStage(self):
+		src1 = self.decExReg.reg1
 		if self.decExReg.ALUSrc:
 			src2 = self.decExReg.offset
 		else:
@@ -49,7 +48,10 @@ class pipelineSimulator(object):
 			self.executeMem.rd = self.decExReg.rt
 		self.executeMem.regValue = self.decExReg.reg2
 		self.executeMem.branchAddre = calculateComplement((calculateNum(self.decExReg.offset) << 2) + int(self.decExReg.incPC , 2))
-		self.executeMem.ALUResult = ALU(self.decExReg.ALUOP , self.decExReg.reg1 , src2)
+		ALUControl = ALUControl(ALUOP)
+		if "0100" in ALUcontrol or "0011" in ALUControl:
+			src1 = self.decExReg.offset[21:26:1]
+		self.executeMem.ALUResult = ALU(ALUControl , src1 , src2)
 		self.executeMem.Zero = Zero(self.decExReg.reg1 , src2)
 
 	def dataStage(self):
@@ -68,6 +70,22 @@ class pipelineSimulator(object):
 				if "00000" not in memWrite.rd:
 					self.reg[memWrite.rd] = calculateComplement(memWrite.memRead)
 
+
+	def run(self):
+		while not self.isDone:
+			self.fetchStage()
+			self.decodeStage()
+			self.fetchDec.advance(decExReg)
+			self.execStage()
+			self.decExReg.advance(executeMem)
+			self.dataStage()
+			self.executeMem.advance(memWrite)
+			self.writeBackStage()
+			self.checkDone()
+
+
+	def checkDone(self):
+		pass
 
 
 class FetchDecReg(object):
@@ -154,21 +172,76 @@ class MemWriteReg(object):
 		return "--MEM/WB Register--\nALU Result:%s\nMemory Read:%s\nTarget Register:%s\nReg Write:%d\nMem To Reg:%d\n" % (self.ALUResult , self.memoryRead , self.rd , self.regWrite , self.memToReg)
 
 
+
+
+def ALUControl(ALUOp , func):
+	if "000" in ALUOp:
+		return "0010"
+	elif "001" in ALUOp:
+		return "0110"
+	if "010" in ALUOp:
+		# add
+		if "100000" in func:
+			return "0010"
+		# subtract
+		elif "100010" in func:
+			return "0110"
+		# and
+		elif "100100" in func:
+			return "0000"
+		# nor
+		elif "100111" in func:
+			return "1100"
+		# slt
+		elif "101010" in func:
+			return "0111"
+		# sll
+		elif "000010" in func:
+			return "0011"
+		# srl
+		elif "000000" in func:
+			return "0100"
+		# sltu
+		elif "101011" in func:
+			return "0101"
+
+
+
 def ALU(ALUcontrol ,src1 , src2):
+	# and
 	if "0000" in ALUcontrol:
 		return calculateComplement(calculateNum(src2) & calculateNum(src1))
+	# or
 	elif "0001" in ALUcontrol:
 		return calculateComplement(calculateNum(src2) | calculateNum(src1))
+	# add
 	elif "0010" in ALUcontrol:
 		return calculateComplement(calculateNum(src2) + calculateNum(src1))
+	# sll
+	elif "0011" in ALUcontrol:
+		return calculateComplement((calculateNum(src2) << calculateShifts(src1)))
+	# srl
+	elif "0100" in ALUcontrol:
+		return calculateComplement((calculateNum(src2) >> calculateShifts(src1)))
+	# sltu
+	elif "0101" in ALUcontrol:
+		if '1' in src2[0]:
+			return "1"
+		elif '1' in src[1]:
+			return "0"
+		else:
+			return "1" if calculateNum(src2) > calculateNum(src1) else "0"
+	# subtract
 	elif "0110" in ALUcontrol:
 		return calculateComplement(calculateNum(src2) - calculateNum(src1))
+	# slt
 	elif "0111" in ALUcontrol:
 		if calculateNum(src2) > calculateNum(src1):
 			return "1"
 		else:
 			return "0"
-	else:
+	# nor
+	elif "1100" in ALUControl:
 		return calculateComplement(~(calculateNum(src1) | calculateNum(src2)))
 
 def zero(src1 , src2):
@@ -176,6 +249,10 @@ def zero(src1 , src2):
 		return 1
 	return 0
 
+
+# Handling shifts
+def calculateShifts(num):
+	return int(num , 2)
 
 # Handling Negative values
 def calculateComplement(num):
@@ -195,4 +272,5 @@ def calculateNum(num):
 		return int(num , 2)
 
 #p = pipelineSimulator()
-print ALU("0110" , "000001" , "0000010")
+# print calculateComplement(-4)
+# print ALU("0100" , "000001" , calculateComplement(2))
