@@ -16,7 +16,7 @@ class Parser(object):
 					'$t8':"11000" ,'$t9':"11001" ,'$k0':"11010" ,'$k1':"11011" ,
 					'$gp':"11100" ,'$sp':"11101" ,'$fp':"11110" ,'$ra':"11111" }
 		self.op = { 'addi':"001000" , 'beq':"000100", 'bne':"000101" , 'lw':"100011" , 'lbu':"100100" , 
-					'sw':"101011" , 'sb':"101000" , 'lui':"001111" , 'j':"000010" , 'jal':"000010" , 'lb':""}
+					'sw':"101011" , 'sb':"101000" , 'lui':"001111" , 'j':"000010" , 'jal':"000010" , 'lb':"100000"}
 		self.func = {'add':"100000" , 'and':"100100" , 'jr':"001000" , 'nor':"100111" , 'slt':"101010" ,
 					 'sltu':"101011" , 'srl':"000010" , 'sll':"000000" , 'sub':"100010" }
 		self.labels = {}
@@ -122,7 +122,8 @@ def calculateOffSet(num):
 	return (format(num if num >= 0 else (1 << 16) + num, '016b'));
 
 
-i = Parser("text.txt")
+#i = Parser("text.txt")
+#print i.reg.values()
 #print i.memory
 # print i.labels
 # x = calculateOffSet(7)
