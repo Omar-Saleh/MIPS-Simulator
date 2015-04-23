@@ -55,12 +55,20 @@ class pipelineSimulator(object):
 		self.executeMem.Zero = Zero(self.decExReg.reg1 , src2)
 
 	def dataStage(self):
-		if self.executeMem.branch & self.executeMem.zero:
+		if self.executeMem.branch and self.executeMem.zero:
+			self.PCSrc = 1
+		if self.executeMem.notBranch and not self.executeMem.zero:
 			self.PCSrc = 1
 		if(self.executeMem.memWrite):
-			memory[int(self.executeMem.ALUResult , 2)] = calculateNum(self.executeMem.regValue)
+			if self.executeMem.swByte:
+				memory[int(self.executeMem.ALUResult , 2)] = calculateNum(unextendByte(self.executeMem.regValue))
+			else:
+				memory[int(self.executeMem.ALUResult , 2)] = calculateNum(self.executeMem.regValue)
 		elif(self.executeMem.memRead):
-			memWrite.memRead = calculateComplement(memory[int(self.executeMem.ALUResult , 2)])
+			if self.executeMem.signExtend:
+				memWrite.memRead = signExtend(calculateComplement(memory[int(self.executeMem.ALUResult , 2)]))
+			else:
+				memWrite.memRead = calculateComplement(memory[int(self.executeMem.ALUResult , 2)])
 
 	def writeBackStage(self):
 		if(memWrite.regWrite):
@@ -116,10 +124,13 @@ class DecExReg(object):
 		self.memToReg = 0
 		self.regWrite = 0
 		self.branch = 0
+		self.notBranch = 0
 		self.memWrite = 0
 		self.memRead = 0
 		self.ALUSrc = 0
 		self.RegDst = 0
+		self.swByte = 0
+		self.signExtend = 0	
 		self.ALUOP = ""
 
 	def advance(self, executeMemReg):
@@ -128,7 +139,10 @@ class DecExReg(object):
 		executeMemReg.regWrite = self.regWrite
 		executeMemReg.memToReg = self.memToReg
 		executeMemReg.branch = self.branch
+		executeMemReg.notBranch = self.notBranch
 		executeMemReg.memRead = self.memRead
+		executeMemReg.swByte = self.swByte
+		executeMemReg.signExtend = self.signExtend	
 
 	def __repr__(self):
 		return "--ID/EXE Register--\nIncremented Pc:%s\nRegister 1 Value:%s\nRegister 2 Value:%s\nOffset:%s\nrt field:%s\nrd field:%s\nmemToReg:%d\nregWrite:%d\nBranch:%d\nmemWrite:%d\nmemRead:%d\nALUSrc:%d\nRegDst:%d\nALUOP:%s\n" % (self.incPC , self.reg1 , self.reg2 , self.offset , self.rd , self.rt , self.memToReg , self.regWrite , self.branch , self.memWrite , self.memRead , self.ALUSrc , self.RegDst , self.ALUOP)
@@ -143,10 +157,13 @@ class ExecuteMemReg(object):
 		self.rd = ""
 		self.zero = 0
 		self.branch = 0
+		self.notBranch = 0
 		self.memWrite = 0
 		self.memRead = 0
 		self.regWrite = 0
 		self.memToReg = 0
+		self.swByte = 0
+		self.signExtend = 0		
 
 	def advance(self , memWriteReg):
 		memWriteReg.ALUResult = self.ALUResult
@@ -166,7 +183,7 @@ class MemWriteReg(object):
 		self.memoryRead = ""
 		self.rd = ""
 		self.regWrite = 0
-		self.memToReg = 0
+		self.memToReg = 0	
 
 	def __repr__(self):
 		return "--MEM/WB Register--\nALU Result:%s\nMemory Read:%s\nTarget Register:%s\nReg Write:%d\nMem To Reg:%d\n" % (self.ALUResult , self.memoryRead , self.rd , self.regWrite , self.memToReg)
@@ -175,11 +192,16 @@ class MemWriteReg(object):
 
 
 def ALUControl(ALUOp , func):
+	# lw/lbu/lb/sw/sb
 	if "000" in ALUOp:
 		return "0010"
+	# beq/bne
 	elif "001" in ALUOp:
 		return "0110"
-	if "010" in ALUOp:
+	# lui
+	elif "011" in ALUOp:
+		return "1000"
+	elif "010" in ALUOp:
 		# add
 		if "100000" in func:
 			return "0010"
@@ -204,7 +226,6 @@ def ALUControl(ALUOp , func):
 		# sltu
 		elif "101011" in func:
 			return "0101"
-
 
 
 def ALU(ALUcontrol ,src1 , src2):
@@ -240,6 +261,9 @@ def ALU(ALUcontrol ,src1 , src2):
 			return "1"
 		else:
 			return "0"
+	# lui
+	elif "1000" in ALUcontrol:
+		return calculateComplement((calculateNum(src2) << 16))
 	# nor
 	elif "1100" in ALUControl:
 		return calculateComplement(~(calculateNum(src1) | calculateNum(src2)))
@@ -271,6 +295,15 @@ def calculateNum(num):
 	else:
 		return int(num , 2)
 
+
+def signExtend(num):
+	num = unextendByte(num)
+	return num[0] * 24 + num
+
+def unextendByte(num):
+	return num[24:]
+
 #p = pipelineSimulator()
 # print calculateComplement(-4)
 # print ALU("0100" , "000001" , calculateComplement(2))
+# print unextendByte(calculateComplement(5))

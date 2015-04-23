@@ -84,10 +84,11 @@ class Parser(object):
 				ans = self.op[instr[0]] + self.reg[instr[2]] + self.reg[instr[1]] + calculateOffSet(int(instr[3]))
 
 			# Handling Memory Loads/Stores
-			elif instr[0] == 'lw' or instr[0] == 'sw' or instr[0] ==  'lbu' or instr[0] == 'sb' or instr[0] == 'lb' or instr[0] == 'lui':
+			elif instr[0] == 'lw' or instr[0] == 'sw' or instr[0] ==  'lbu' or instr[0] == 'sb' or instr[0] == 'lb':
 				target = instr[2].replace('(' , ' ').replace(')' , ' ').split()
 				ans = self.op[instr[0]] + self.reg[target[1]] + self.reg[instr[1]] + ans + calculateOffSet(int(target[0]))
-
+			elif instr[0] == 'lui':
+				ans = self.op[instr[0]] + "00000" + self.reg[instr[1]] + calculateOffSet(int(instr[2]))
 			# Handling branches
 			else:
 				ans = self.op[instr[0]] + self.reg[instr[1]] + self.reg[instr[2]] + calculateOffSet(self.labels[instr[3]] - self.pc - (count * 4) - 4)
