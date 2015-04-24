@@ -14,7 +14,7 @@ class pipelineSimulator(object):
 		self.pc = calculateComplement(i.pc)
 		self.PCSrc = 0
 		self.reg = {'11110':0 , '00001':0, '11111':0, '11100':0, '00100':0, '00101':0, '00110':0, '00111':0, '10001':0, '00000':0
-		, '01100':0, '11101':0, '11010':0, '11011':0, '10110':0, '01111':0, '10100':0, '10101':0, '10010':0, '10011':0, '10000':0
+		, '01100':0, '11101':0, '11010':0, '11011':0, '10110':-5, '01111':0, '10100':0, '10101':0, '10010':0, '10011':0, '10000':0
 		, '01110':0, '11001':0, '11000':0, '10111':0, '01011':0, '01010':0, '01001':0, '01000':0, '00011':0, '00010':0, '01101':0
 		, '00000':0}
 		self.regs = i.getReg()
@@ -500,20 +500,20 @@ def ALU(ALUcontrol ,src1 , src2):
 	# sltu
 	elif "0101" in ALUcontrol:
 		if '1' in src2[0]:
-			return "1"
-		elif '1' in src[1]:
-			return "0"
+			return "0" * 31 + "1"
+		elif '1' in src1[1]:
+			return "0" * 32
 		else:
-			return "1" if calculateNum(src2) > calculateNum(src1) else "0"
+			return "0" * 31 + "1" if calculateNum(src2) > calculateNum(src1) else "0" * 32
 	# subtract
 	elif "0110" in ALUcontrol:
 		return calculateComplement(calculateNum(src2) - calculateNum(src1))
 	# slt
 	elif "0111" in ALUcontrol:
 		if calculateNum(src2) > calculateNum(src1):
-			return "1"
+			return "0" * 31 + "1"
 		else:
-			return "0"
+			return "0" * 32
 	# lui
 	elif "1000" in ALUcontrol:
 		return calculateComplement((calculateNum(src2) << 16))

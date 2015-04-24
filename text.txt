@@ -1,7 +1,5 @@
 .data
 4 128
 .start: 010
-bne $s1 , $s0 , exit
-addi $s5 , $s6 , 450
-exit : addi $s1 , $s1 , 5
+lui $s5 , 15
 halt
