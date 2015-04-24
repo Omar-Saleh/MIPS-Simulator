@@ -14,7 +14,7 @@ class pipelineSimulator(object):
 		self.pc = calculateComplement(i.pc)
 		self.PCSrc = 0
 		self.reg = {'11110':0 , '00001':0, '11111':0, '11100':0, '00100':0, '00101':0, '00110':0, '00111':0, '10001':0, '00000':0
-		, '01100':0, '11101':0, '11010':0, '11011':0, '10110':0, '01111':0, '10100':0, '10101':0, '10010':0, '10011':0, '10000':10
+		, '01100':0, '11101':0, '11010':0, '11011':0, '10110':0, '01111':0, '10100':0, '10101':0, '10010':0, '10011':0, '10000':0
 		, '01110':0, '11001':0, '11000':0, '10111':0, '01011':0, '01010':0, '01001':0, '01000':0, '00011':0, '00010':0, '01101':0
 		, '00000':0}
 		self.regs = i.getReg()
@@ -24,9 +24,11 @@ class pipelineSimulator(object):
 		self.memWrite = MemWriteReg()
 		self.stall = 0
 		print self.memory
+		print i.labels
 		self.run()
 		for item in self.regs.keys():
 			print item + " " + str(self.reg[self.regs[item]])
+
 
 	#	print self.executeMem.regValue
 
@@ -34,24 +36,31 @@ class pipelineSimulator(object):
 	def fetchStage(self):
 		if self.PCSrc:
 			pc = calculateNum(self.branchAddre)
+			print "!!!"
+			print pc
+			#print self.branchAddre
 		else:
 			pc = calculateNum(self.pc)
+		#print pc
 		if pc in self.memory and not self.stall:
 			instr = self.memory[pc]
 			if "0" * 32 in instr:
 				self.fetchDec.done = True
 			else:
 				self.fetchDec.instruction = instr
-				self.pc = calculateNum(self.pc) + 4
-				self.pc = calculateComplement(self.pc)
+				pc = pc + 4
+				self.pc = calculateComplement(pc)
 				self.fetchDec.incPC = self.pc
 				self.fetchDec.start = True
+				# print calculateNum(self.pc)	
 		else:
 			self.fetchDec.instruction = "1" * 32
 
 	def decodeStage(self):
 		if self.fetchDec.start:
 			instr = self.fetchDec.instruction
+			# if "1" * 32 in instr:
+			# 	pass
 			if "0" * 32 in instr:
 				self.fetchDec.advance(self.decExReg)
 			else:
@@ -83,10 +92,13 @@ class pipelineSimulator(object):
 				self.executeMem.rd = self.decExReg.rd
 			self.executeMem.regValue = self.decExReg.reg2
 			self.executeMem.branchAddre = calculateComplement(((calculateNum(self.decExReg.offset) << 2) + int(self.decExReg.incPC , 2)))
+			# print calculateNum(self.executeMem.branchAddre)
 			# print calculateNum(self.decExReg.offset)
 			# print (calculateNum(self.decExReg.offset) << 2) 
 			# print calculateNum(self.executeMem.branchAddre)
-			self.branchAddre = self.executeMem.branchAddre
+			# if self.executeMem.branch or self.executeMem.notBranch:
+			# 	self.branchAddre = self.executeMem.branchAddre
+
 			ALUcontrol = ALUControl(self.decExReg.ALUOP , self.decExReg.offset[26:32])
 			# print self.decExReg.ALUOP
 			# print ALUcontrol
@@ -108,11 +120,11 @@ class pipelineSimulator(object):
 			self.executeMem.advance(self.memWrite)
 		if self.executeMem.start:
 			if self.executeMem.branch and self.executeMem.zero:
-				# print "here"
-				self.PCSrc = 1
-			print str(self.executeMem.notBranch) + " " + str(self.executeMem.zero)
-			if self.executeMem.notBranch and not self.executeMem.zero:
 				print "here"
+				self.branchAddre = self.executeMem.branchAddre
+				self.PCSrc = 1
+			if self.executeMem.notBranch and not self.executeMem.zero:
+				self.branchAddre = self.executeMem.branchAddre
 				self.PCSrc = 1
 			if self.executeMem.branch or self.executeMem.notBranch:
 				# print "!!!"
@@ -512,7 +524,7 @@ def ALU(ALUcontrol ,src1 , src2):
 		pass
 
 def Zero(src1 , src2):
-	print calculateNum(ALU("0110" , src1 , src2)) 
+	# print calculateNum(ALU("0110" , src1 , src2)) 
 	if calculateNum(ALU("0110" , src1 , src2)) == 0:
 		return 1
 	return 0
