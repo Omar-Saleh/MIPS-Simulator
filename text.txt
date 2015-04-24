@@ -1,4 +1,6 @@
 .data
 4 128
 .start: 010
-srl $s0 , $s0 , 2
+exit : addi $s1 , $s1 , 5
+beq $t1 , $t2 , exit
+addi $s4 , $s5 , 5

@@ -2,7 +2,9 @@ from Parser import *
 
 class pipelineSimulator(object):
 	"""docstring for pipelineSimulator"""
+
 	def __init__(self):
+
 		#filename = raw_input("Please Write the name of the desired file to execute : ")
 		i = Parser("text.txt")
 		self.memory = i.getMemory()
@@ -19,9 +21,11 @@ class pipelineSimulator(object):
 		self.decExReg = DecExReg()
 		self.executeMem = ExecuteMemReg()
 		self.memWrite = MemWriteReg()
+		self.stall = 0
 		print self.memory
 		self.run()
 		print self.reg
+
 	#	print self.executeMem.regValue
 
 
@@ -31,7 +35,7 @@ class pipelineSimulator(object):
 			pc = calculateNum(self.branchAddre)
 		else:
 			pc = calculateNum(self.pc)
-		if pc in self.memory:
+		if pc in self.memory and not self.stall:
 			instr = self.memory[pc]
 			print instr
 			self.fetchDec.instruction = instr
@@ -101,6 +105,9 @@ class pipelineSimulator(object):
 				self.PCSrc = 1
 			if self.executeMem.notBranch and not self.executeMem.zero:
 				self.PCSrc = 1
+			if self.executeMem.branch or self.executeMem.notBranch:
+				print "!!!"
+				self.stall = 0
 			if(self.executeMem.memWrite):
 				if self.executeMem.swByte:
 					self.memory[int(self.executeMem.ALUResult , 2)] = calculateNum(unextendByte(self.executeMem.regValue))
@@ -125,7 +132,7 @@ class pipelineSimulator(object):
 
 
 	def run(self):
-		for i in range(6):
+		for i in range(10):
 			self.writeBackStage()
 	#		print self.fetchDec
 	#		print self.decExReg
@@ -267,10 +274,20 @@ class pipelineSimulator(object):
 			self.decExReg.branch = 1
 			self.decExReg.notBranch = 0
 			self.decExReg.swByte = 0
-			self.decExReg.signExtend = 0	
-		
-
-
+			self.decExReg.signExtend = 0
+			self.stall = 1
+		elif "111111" in opcode:
+			self.decExReg.regWrite = 0
+			self.decExReg.RegDst = 0
+			self.decExReg.ALUSrc = 0
+			self.decExReg.memRead = 0
+			self.decExReg.memWrite = 0
+			self.decExReg.memToReg = 0
+			self.decExReg.ALUOP = "111"
+			self.decExReg.branch = 0
+			self.decExReg.notBranch = 0
+			self.decExReg.swByte = 0
+			self.decExReg.signExtend = 0
 		
 
 class FetchDecReg(object):
@@ -388,7 +405,9 @@ def ALUControl(ALUOp , func):
 		return "1000"
 	# addi
 	elif "100" in ALUOp:
-		return "0010"	
+		return "0010"
+	elif "111" in ALUOp:
+		return "1111"
 	elif "010" in ALUOp:
 		# add
 		if "100000" in func:
@@ -457,6 +476,8 @@ def ALU(ALUcontrol ,src1 , src2):
 	# nor
 	elif "1100" in ALUControl:
 		return calculateComplement(~(calculateNum(src1) | calculateNum(src2)))
+	elif "1111" in ALUControl:
+		pass
 
 def Zero(src1 , src2):
 	print calculateNum(ALU("0110" , src1 , src2)) 
