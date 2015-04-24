@@ -5,7 +5,7 @@ class pipelineSimulator(object):
 
 	def __init__(self):
 
-		#filename = raw_input("Please Write the name of the desired file to execute : ")
+		#filename = raw_input("Please Write the name of the desired file to execute : ")g
 		i = Parser("text.txt")
 		self.memory = i.getMemory()
 		self.cycles = 0
@@ -14,9 +14,10 @@ class pipelineSimulator(object):
 		self.pc = calculateComplement(i.pc)
 		self.PCSrc = 0
 		self.reg = {'11110':0 , '00001':0, '11111':0, '11100':0, '00100':0, '00101':0, '00110':0, '00111':0, '10001':0, '00000':0
-		, '01100':0, '11101':0, '11010':0, '11011':0, '10110':0, '01111':0, '10100':0, '10101':0, '10010':0, '10011':0, '10000':8
+		, '01100':0, '11101':0, '11010':0, '11011':0, '10110':0, '01111':0, '10100':0, '10101':0, '10010':0, '10011':0, '10000':10
 		, '01110':0, '11001':0, '11000':0, '10111':0, '01011':0, '01010':0, '01001':0, '01000':0, '00011':0, '00010':0, '01101':0
 		, '00000':0}
+		self.regs = i.getReg()
 		self.fetchDec = FetchDecReg()
 		self.decExReg = DecExReg()
 		self.executeMem = ExecuteMemReg()
@@ -24,33 +25,35 @@ class pipelineSimulator(object):
 		self.stall = 0
 		print self.memory
 		self.run()
-		print self.reg
+		for item in self.regs.keys():
+			print item + " " + str(self.reg[self.regs[item]])
 
 	#	print self.executeMem.regValue
 
 
 	def fetchStage(self):
 		if self.PCSrc:
-			print "here"
 			pc = calculateNum(self.branchAddre)
 		else:
 			pc = calculateNum(self.pc)
 		if pc in self.memory and not self.stall:
 			instr = self.memory[pc]
-			print instr
-			self.fetchDec.instruction = instr
-			self.pc = calculateNum(self.pc) + 4
-			self.pc = calculateComplement(self.pc)
-			self.fetchDec.incPC = self.pc
-			self.fetchDec.start = True
+			if "0" * 32 in instr:
+				self.fetchDec.done = True
+			else:
+				self.fetchDec.instruction = instr
+				self.pc = calculateNum(self.pc) + 4
+				self.pc = calculateComplement(self.pc)
+				self.fetchDec.incPC = self.pc
+				self.fetchDec.start = True
 		else:
 			self.fetchDec.instruction = "1" * 32
 
 	def decodeStage(self):
 		if self.fetchDec.start:
 			instr = self.fetchDec.instruction
-			if "1" * 32 in instr:
-				pass
+			if "0" * 32 in instr:
+				self.fetchDec.advance(self.decExReg)
 			else:
 				opcode = instr[0:6]
 				self.decExReg.reg1 = instr[6:11]
@@ -66,7 +69,9 @@ class pipelineSimulator(object):
 
 
 	def execStage(self):
-		if self.decExReg.start:
+		if self.decExReg.done:
+			self.decExReg.advance(self.executeMem)
+		elif self.decExReg.start:
 			src1 = calculateComplement(self.reg[self.decExReg.reg1])
 			if self.decExReg.ALUSrc:
 				src2 = self.decExReg.offset
@@ -89,7 +94,7 @@ class pipelineSimulator(object):
 			if "0100" in ALUcontrol or "0011" in ALUcontrol:
 				# print "here"
 				src1 = self.decExReg.offset[21:26:1]
-			print self.decExReg.offset[21:26:1]
+			# print self.decExReg.offset[21:26:1]
 			# print src1
 			# print src2
 			self.executeMem.ALUResult = ALU(ALUcontrol , src1 , src2)
@@ -99,14 +104,18 @@ class pipelineSimulator(object):
 
 
 	def dataStage(self):
+		if self.executeMem.done:
+			self.executeMem.advance(self.memWrite)
 		if self.executeMem.start:
 			if self.executeMem.branch and self.executeMem.zero:
+				# print "here"
+				self.PCSrc = 1
+			print str(self.executeMem.notBranch) + " " + str(self.executeMem.zero)
+			if self.executeMem.notBranch and not self.executeMem.zero:
 				print "here"
 				self.PCSrc = 1
-			if self.executeMem.notBranch and not self.executeMem.zero:
-				self.PCSrc = 1
 			if self.executeMem.branch or self.executeMem.notBranch:
-				print "!!!"
+				# print "!!!"
 				self.stall = 0
 			if(self.executeMem.memWrite):
 				if self.executeMem.swByte:
@@ -122,6 +131,8 @@ class pipelineSimulator(object):
 			self.executeMem.advance(self.memWrite)
 
 	def writeBackStage(self):
+		if self.memWrite.done:
+			self.isDone = True
 		if self.memWrite.start:
 			if(self.memWrite.regWrite):
 				if(self.memWrite.memToReg):
@@ -132,8 +143,10 @@ class pipelineSimulator(object):
 
 
 	def run(self):
-		for i in range(10):
+		while not self.isDone:
 			self.writeBackStage()
+			if self.isDone:
+				break
 	#		print self.fetchDec
 	#		print self.decExReg
 	#		print self.executeMem
@@ -158,10 +171,7 @@ class pipelineSimulator(object):
 			print self.decExReg
 			print self.executeMem
 			print self.memWrite
-
-	def checkDone(self):
-		pass
-
+			# print self.reg
 
 	def control(self , opcode):
 		#r type intstr
@@ -276,6 +286,7 @@ class pipelineSimulator(object):
 			self.decExReg.swByte = 0
 			self.decExReg.signExtend = 0
 			self.stall = 1
+		#stall
 		elif "111111" in opcode:
 			self.decExReg.regWrite = 0
 			self.decExReg.RegDst = 0
@@ -288,6 +299,20 @@ class pipelineSimulator(object):
 			self.decExReg.notBranch = 0
 			self.decExReg.swByte = 0
 			self.decExReg.signExtend = 0
+		# bne
+		elif "000101" in opcode:
+			self.decExReg.regWrite = 0
+			self.decExReg.RegDst = 1
+			self.decExReg.ALUSrc = 0
+			self.decExReg.memRead = 0
+			self.decExReg.memWrite = 0
+			self.decExReg.memToReg = 0
+			self.decExReg.ALUOP = "001"
+			self.decExReg.branch = 0
+			self.decExReg.notBranch = 1
+			self.decExReg.swByte = 0
+			self.decExReg.signExtend = 0
+			self.stall = 1
 		
 
 class FetchDecReg(object):
@@ -296,9 +321,11 @@ class FetchDecReg(object):
 		self.instruction = ""
 		self.incPC = ""
 		self.start = False
+		self.done = False
 
 	def advance(self, decExReg):
 		decExReg.incPC = self.incPC
+		decExReg.done = self.done
 
 
 	def __repr__(self):
@@ -329,6 +356,7 @@ class DecExReg(object):
 		self.PCSrc = 0
 		self.ALUOP = ""
 		self.start = False
+		self.done = False
 
 	def advance(self, executeMemReg):
 		executeMemReg.memWrite = self.memWrite
@@ -340,6 +368,7 @@ class DecExReg(object):
 		executeMemReg.swByte = self.swByte
 		executeMemReg.signExtend = self.signExtend	
 		executeMemReg.PCSrc = self.PCSrc
+		executeMemReg.done = self.done
 
 	def __repr__(self):
 		return "--ID/EXE Register--\nIncremented Pc:%s\nRegister 1 Value:%s\nRegister 2 Value:%s\nOffset:%s\nrd field:%s\nrt field:%s\nmemToReg:%d\nregWrite:%d\nBranch:%d\nmemWrite:%d\nmemRead:%d\nALUSrc:%d\nRegDst:%d\nALUOP:%s\n" % (self.incPC , self.reg1 , self.reg2 , self.offset , self.rd , self.rt , self.memToReg , self.regWrite , self.branch , self.memWrite , self.memRead , self.ALUSrc , self.RegDst , self.ALUOP)
@@ -363,6 +392,7 @@ class ExecuteMemReg(object):
 		self.signExtend = 0	
 		self.PCSrc = 0
 		self.start = False
+		self.done = False
 
 	def advance(self , memWriteReg):
 		memWriteReg.ALUResult = self.ALUResult
@@ -370,6 +400,7 @@ class ExecuteMemReg(object):
 		memWriteReg.regWrite = self.regWrite
 		memWriteReg.memToReg = self.memToReg
 		memWriteReg.PCSrc = self.PCSrc
+		memWriteReg.done = self.done
 
 
 	def __repr__(self):
@@ -386,6 +417,7 @@ class MemWriteReg(object):
 		self.regWrite = 0
 		self.memToReg = 0
 		self.PCSrc = 0
+		self.done = False
 
 	def __repr__(self):
 		return "--MEM/WB Register--\nALU Result:%s\nMemory Read:%s\nTarget Register:%s\nReg Write:%d\nMem To Reg:%d\n" % (self.ALUResult , self.memRead , self.rd , self.regWrite , self.memToReg)
@@ -474,9 +506,9 @@ def ALU(ALUcontrol ,src1 , src2):
 	elif "1000" in ALUcontrol:
 		return calculateComplement((calculateNum(src2) << 16))
 	# nor
-	elif "1100" in ALUControl:
+	elif "1100" in ALUcontrol:
 		return calculateComplement(~(calculateNum(src1) | calculateNum(src2)))
-	elif "1111" in ALUControl:
+	elif "1111" in ALUcontrol:
 		pass
 
 def Zero(src1 , src2):

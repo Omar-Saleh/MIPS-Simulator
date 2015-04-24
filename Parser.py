@@ -62,6 +62,8 @@ class Parser(object):
 		if split_Index > 0:
 			instr = instr[instr.index(':') + 1::1]
 
+		if len(instr) == 1:
+			ans = "0" * 32
 		# Handling R-Type instructions
 		if instr[0] in self.noop:
 			if "srl" in instr[0] or "sll" in instr[0]:
@@ -116,6 +118,9 @@ class Parser(object):
 
 	def getPC(self):
 		return self.PC
+
+	def getReg(self):
+		return self.reg
 
 
 def calculateOffSet(num):
