@@ -12,7 +12,7 @@ class pipelineSimulator(object):
 		self.pc = calculateComplement(i.pc)
 		self.PCSrc = 0
 		self.reg = {'11110':0 , '00001':0, '11111':0, '11100':0, '00100':0, '00101':0, '00110':0, '00111':0, '10001':0, '00000':0
-		, '01100':0, '11101':0, '11010':0, '11011':0, '10110':0, '01111':0, '10100':0, '10101':0, '10010':0, '10011':0, '10000':0
+		, '01100':0, '11101':0, '11010':0, '11011':0, '10110':0, '01111':0, '10100':0, '10101':0, '10010':0, '10011':0, '10000':8
 		, '01110':0, '11001':0, '11000':0, '10111':0, '01011':0, '01010':0, '01001':0, '01000':0, '00011':0, '00010':0, '01101':0
 		, '00000':0}
 		self.fetchDec = FetchDecReg()
@@ -26,9 +26,14 @@ class pipelineSimulator(object):
 
 
 	def fetchStage(self):
-		pc = calculateNum(self.pc)
+		if self.PCSrc:
+			print "here"
+			pc = calculateNum(self.branchAddre)
+		else:
+			pc = calculateNum(self.pc)
 		if pc in self.memory:
 			instr = self.memory[pc]
+			print instr
 			self.fetchDec.instruction = instr
 			self.pc = calculateNum(self.pc) + 4
 			self.pc = calculateComplement(self.pc)
@@ -47,10 +52,10 @@ class pipelineSimulator(object):
 				self.decExReg.reg1 = instr[6:11]
 				self.decExReg.reg2 = instr[11:16]
 				self.decExReg.offset = extender(instr[16:32])
-				print instr
+				# print instr
 				self.decExReg.rd = instr[16:21]
 				self.decExReg.rt = instr[11:16]
-				print self.decExReg.rt
+				# print self.decExReg.rt
 				self.control(opcode)
 				self.decExReg.start = True
 				self.fetchDec.advance(self.decExReg)
@@ -68,13 +73,23 @@ class pipelineSimulator(object):
 			else:
 				self.executeMem.rd = self.decExReg.rd
 			self.executeMem.regValue = self.decExReg.reg2
-			self.executeMem.branchAddre = calculateComplement((calculateNum(self.decExReg.offset) << 2) + int(self.decExReg.incPC , 2))
+			self.executeMem.branchAddre = calculateComplement(((calculateNum(self.decExReg.offset) << 2) + int(self.decExReg.incPC , 2)))
+			# print calculateNum(self.decExReg.offset)
+			# print (calculateNum(self.decExReg.offset) << 2) 
+			# print calculateNum(self.executeMem.branchAddre)
+			self.branchAddre = self.executeMem.branchAddre
 			ALUcontrol = ALUControl(self.decExReg.ALUOP , self.decExReg.offset[26:32])
-			print self.decExReg.ALUOP
-			if "0100" in ALUcontrol in "0011" in ALUcontrol:
+			# print self.decExReg.ALUOP
+			# print ALUcontrol
+			# print ALUcontrol
+			if "0100" in ALUcontrol or "0011" in ALUcontrol:
+				# print "here"
 				src1 = self.decExReg.offset[21:26:1]
+			print self.decExReg.offset[21:26:1]
+			# print src1
+			# print src2
 			self.executeMem.ALUResult = ALU(ALUcontrol , src1 , src2)
-			self.executeMem.zero = Zero(self.decExReg.reg1 , src2)
+			self.executeMem.zero = Zero(src1 , src2)
 			self.executeMem.start = True
 			self.decExReg.advance(self.executeMem)
 
@@ -82,19 +97,20 @@ class pipelineSimulator(object):
 	def dataStage(self):
 		if self.executeMem.start:
 			if self.executeMem.branch and self.executeMem.zero:
+				print "here"
 				self.PCSrc = 1
 			if self.executeMem.notBranch and not self.executeMem.zero:
 				self.PCSrc = 1
 			if(self.executeMem.memWrite):
 				if self.executeMem.swByte:
-					memory[int(self.executeMem.ALUResult , 2)] = calculateNum(unextendByte(self.executeMem.regValue))
+					self.memory[int(self.executeMem.ALUResult , 2)] = calculateNum(unextendByte(self.executeMem.regValue))
 				else:
-					memory[int(self.executeMem.ALUResult , 2)] = calculateNum(self.executeMem.regValue)
+					self.memory[int(self.executeMem.ALUResult , 2)] = calculateNum(self.executeMem.regValue)
 			elif(self.executeMem.memRead):
 				if self.executeMem.signExtend:
-					memWrite.memRead = signExtend(calculateComplement(memory[int(self.executeMem.ALUResult , 2)]))
+					self.memWrite.memRead = signExtend(calculateComplement(int(self.memory[str(int(self.executeMem.ALUResult , 2))])))
 				else:
-					memWrite.memRead = calculateComplement(memory[int(self.executeMem.ALUResult , 2)])
+					self.memWrite.memRead = calculateComplement(int(self.memory[str(int(self.executeMem.ALUResult , 2))]))
 			self.memWrite.start = True
 			self.executeMem.advance(self.memWrite)
 
@@ -111,25 +127,25 @@ class pipelineSimulator(object):
 	def run(self):
 		for i in range(6):
 			self.writeBackStage()
-			print self.fetchDec
-			print self.decExReg
-			print self.executeMem
-			print self.memWrite
+	#		print self.fetchDec
+	#		print self.decExReg
+	#		print self.executeMem
+	#		print self.memWrite
 			self.dataStage()
-			print self.fetchDec
-			print self.decExReg
-			print self.executeMem
-			print self.memWrite
+	#		print self.fetchDec
+	#		print self.decExReg
+	#		print self.executeMem
+	#		print self.memWrite
 			self.execStage()
-			print self.fetchDec
-			print self.decExReg
-			print self.executeMem
-			print self.memWrite
+	#		print self.fetchDec
+	#		print self.decExReg
+	#		print self.executeMem
+	#		print self.memWrite
 			self.decodeStage()
-			print self.fetchDec
-			print self.decExReg
-			print self.executeMem
-			print self.memWrite
+	#		print self.fetchDec
+	#		print self.decExReg
+	#		print self.executeMem
+	#		print self.memWrite
 			self.fetchStage()
 			print self.fetchDec
 			print self.decExReg
@@ -240,15 +256,14 @@ class pipelineSimulator(object):
 			self.decExReg.swByte = 0
 			self.decExReg.signExtend = 0	
 		#beq
-		elif "001111" in opcode:
-			self.decExReg.regWrite = 1
+		elif "000100" in opcode:
+			self.decExReg.regWrite = 0
 			self.decExReg.RegDst = 1
-			self.decExReg.ALUSrc = 1
+			self.decExReg.ALUSrc = 0
 			self.decExReg.memRead = 0
 			self.decExReg.memWrite = 0
 			self.decExReg.memToReg = 0
-			self.decExReg.ALUOP = "011"
-			self.decExReg.PCSrc = 1
+			self.decExReg.ALUOP = "001"
 			self.decExReg.branch = 1
 			self.decExReg.notBranch = 0
 			self.decExReg.swByte = 0
@@ -391,10 +406,11 @@ def ALUControl(ALUOp , func):
 		elif "101010" in func:
 			return "0111"
 		# sll
-		elif "000010" in func:
+		elif "000000" in func:
+			# print "here"
 			return "0011"
 		# srl
-		elif "000000" in func:
+		elif "000010" in func:
 			return "0100"
 		# sltu
 		elif "101011" in func:
@@ -402,6 +418,7 @@ def ALUControl(ALUOp , func):
 
 
 def ALU(ALUcontrol ,src1 , src2):
+
 	# and
 	if "0000" in ALUcontrol:
 		return calculateComplement(calculateNum(src2) & calculateNum(src1))
@@ -442,7 +459,8 @@ def ALU(ALUcontrol ,src1 , src2):
 		return calculateComplement(~(calculateNum(src1) | calculateNum(src2)))
 
 def Zero(src1 , src2):
-	if ALU("0110" , src1 , src2) == 0:
+	print calculateNum(ALU("0110" , src1 , src2)) 
+	if calculateNum(ALU("0110" , src1 , src2)) == 0:
 		return 1
 	return 0
 
@@ -470,7 +488,6 @@ def calculateNum(num):
 
 def extender(num):
 	return num[0] * 16 + num
-
 
 
 def signExtend(num):

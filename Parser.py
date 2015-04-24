@@ -91,7 +91,7 @@ class Parser(object):
 				ans = self.op[instr[0]] + "00000" + self.reg[instr[1]] + calculateOffSet(int(instr[2]))
 			# Handling branches
 			else:
-				ans = self.op[instr[0]] + self.reg[instr[1]] + self.reg[instr[2]] + calculateOffSet(self.labels[instr[3]] - self.pc - (count * 4) - 4)
+				ans = self.op[instr[0]] + self.reg[instr[1]] + self.reg[instr[2]] + calculateOffSet(((self.labels[instr[3]] - self.pc - (count * 4) - 4) >> 2))
 		return ans
 
 	# Index labels to their addresses

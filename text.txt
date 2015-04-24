@@ -1,4 +1,4 @@
 .data
+4 128
 .start: 010
-addi $s1 , $s2 , 5
-addi $s3 , $s4 , 5
+srl $s0 , $s0 , 2
