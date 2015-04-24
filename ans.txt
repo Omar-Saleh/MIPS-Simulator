@@ -1,6 +1,444 @@
-000000
-000000
-000000
-000000
-00000100101000110001tobeDone
-00000100111000110001tobeDone
+------------------------ Cycle 1 -------------------------
+--IF/ID Register--
+Instruction:00111100000101010000000000001111
+Incremented Pc:00000000000000000000000000010100
+
+--ID/EXE Register--
+Incremented Pc:
+Register 1 Value:
+Register 2 Value:
+Offset:
+rd field:
+rt field:
+memToReg:0
+regWrite:0
+Branch:0
+memWrite:0
+memRead:0
+ALUSrc:0
+RegDst:0
+ALUOP:
+
+--EXE/MEM Register--
+Branch Address:
+ALU Result:
+Register Value:
+Target Register:
+Zero:0
+Branch:0
+Mem Write:0
+Mem Read:0
+Reg Write:0
+Mem To Register:0
+
+--MEM/WB Register--
+ALU Result:
+Memory Read:
+Target Register:
+Reg Write:0
+Mem To Reg:0
+
+$fp 0
+$at 0
+$ra 0
+$gp 0
+$a0 0
+$a1 0
+$a2 0
+$a3 0
+$s1 0
+$0 0
+$t4 0
+$sp 0
+$k0 0
+$k1 0
+$s6 -5
+$t7 0
+$s4 0
+$s5 0
+$s2 0
+$s3 0
+$s0 0
+$t6 0
+$t9 0
+$t8 0
+$s7 0
+$t3 0
+$t2 0
+$t1 0
+$t0 0
+$v1 0
+$v0 0
+$t5 0
+$zero 0
+----------------------------------------------------------
+------------------------ Cycle 2 -------------------------
+--IF/ID Register--
+Instruction:00100010001100010000000000000101
+Incremented Pc:00000000000000000000000000011000
+
+--ID/EXE Register--
+Incremented Pc:00000000000000000000000000010100
+Register 1 Value:00000
+Register 2 Value:10101
+Offset:00000000000000000000000000001111
+rd field:00000
+rt field:10101
+memToReg:0
+regWrite:1
+Branch:0
+memWrite:0
+memRead:0
+ALUSrc:1
+RegDst:1
+ALUOP:011
+
+--EXE/MEM Register--
+Branch Address:
+ALU Result:
+Register Value:
+Target Register:
+Zero:0
+Branch:0
+Mem Write:0
+Mem Read:0
+Reg Write:0
+Mem To Register:0
+
+--MEM/WB Register--
+ALU Result:
+Memory Read:
+Target Register:
+Reg Write:0
+Mem To Reg:0
+
+$fp 0
+$at 0
+$ra 0
+$gp 0
+$a0 0
+$a1 0
+$a2 0
+$a3 0
+$s1 0
+$0 0
+$t4 0
+$sp 0
+$k0 0
+$k1 0
+$s6 -5
+$t7 0
+$s4 0
+$s5 0
+$s2 0
+$s3 0
+$s0 0
+$t6 0
+$t9 0
+$t8 0
+$s7 0
+$t3 0
+$t2 0
+$t1 0
+$t0 0
+$v1 0
+$v0 0
+$t5 0
+$zero 0
+----------------------------------------------------------
+------------------------ Cycle 3 -------------------------
+--IF/ID Register--
+Instruction:00100010001100010000000000000101
+Incremented Pc:00000000000000000000000000011000
+
+--ID/EXE Register--
+Incremented Pc:00000000000000000000000000011000
+Register 1 Value:10001
+Register 2 Value:10001
+Offset:00000000000000000000000000000101
+rd field:00000
+rt field:10001
+memToReg:0
+regWrite:1
+Branch:0
+memWrite:0
+memRead:0
+ALUSrc:1
+RegDst:1
+ALUOP:100
+
+--EXE/MEM Register--
+Branch Address:00000000000000000000000001010000
+ALU Result:00000000000011110000000000000000
+Register Value:10101
+Target Register:10101
+Zero:0
+Branch:0
+Mem Write:0
+Mem Read:0
+Reg Write:1
+Mem To Register:0
+
+--MEM/WB Register--
+ALU Result:
+Memory Read:
+Target Register:
+Reg Write:0
+Mem To Reg:0
+
+$fp 0
+$at 0
+$ra 0
+$gp 0
+$a0 0
+$a1 0
+$a2 0
+$a3 0
+$s1 0
+$0 0
+$t4 0
+$sp 0
+$k0 0
+$k1 0
+$s6 -5
+$t7 0
+$s4 0
+$s5 0
+$s2 0
+$s3 0
+$s0 0
+$t6 0
+$t9 0
+$t8 0
+$s7 0
+$t3 0
+$t2 0
+$t1 0
+$t0 0
+$v1 0
+$v0 0
+$t5 0
+$zero 0
+----------------------------------------------------------
+------------------------ Cycle 4 -------------------------
+--IF/ID Register--
+Instruction:00100010001100010000000000000101
+Incremented Pc:00000000000000000000000000011000
+
+--ID/EXE Register--
+Incremented Pc:00000000000000000000000000011000
+Register 1 Value:10001
+Register 2 Value:10001
+Offset:00000000000000000000000000000101
+rd field:00000
+rt field:10001
+memToReg:0
+regWrite:1
+Branch:0
+memWrite:0
+memRead:0
+ALUSrc:1
+RegDst:1
+ALUOP:100
+
+--EXE/MEM Register--
+Branch Address:00000000000000000000000000101100
+ALU Result:00000000000000000000000000000101
+Register Value:10001
+Target Register:10001
+Zero:0
+Branch:0
+Mem Write:0
+Mem Read:0
+Reg Write:1
+Mem To Register:0
+
+--MEM/WB Register--
+ALU Result:00000000000011110000000000000000
+Memory Read:
+Target Register:10101
+Reg Write:1
+Mem To Reg:0
+
+$fp 0
+$at 0
+$ra 0
+$gp 0
+$a0 0
+$a1 0
+$a2 0
+$a3 0
+$s1 0
+$0 0
+$t4 0
+$sp 0
+$k0 0
+$k1 0
+$s6 -5
+$t7 0
+$s4 0
+$s5 0
+$s2 0
+$s3 0
+$s0 0
+$t6 0
+$t9 0
+$t8 0
+$s7 0
+$t3 0
+$t2 0
+$t1 0
+$t0 0
+$v1 0
+$v0 0
+$t5 0
+$zero 0
+----------------------------------------------------------
+------------------------ Cycle 5 -------------------------
+--IF/ID Register--
+Instruction:00100010001100010000000000000101
+Incremented Pc:00000000000000000000000000011000
+
+--ID/EXE Register--
+Incremented Pc:00000000000000000000000000011000
+Register 1 Value:10001
+Register 2 Value:10001
+Offset:00000000000000000000000000000101
+rd field:00000
+rt field:10001
+memToReg:0
+regWrite:1
+Branch:0
+memWrite:0
+memRead:0
+ALUSrc:1
+RegDst:1
+ALUOP:100
+
+--EXE/MEM Register--
+Branch Address:00000000000000000000000000101100
+ALU Result:00000000000000000000000000000101
+Register Value:10001
+Target Register:10001
+Zero:0
+Branch:0
+Mem Write:0
+Mem Read:0
+Reg Write:1
+Mem To Register:0
+
+--MEM/WB Register--
+ALU Result:00000000000000000000000000000101
+Memory Read:
+Target Register:10001
+Reg Write:1
+Mem To Reg:0
+
+$fp 0
+$at 0
+$ra 0
+$gp 0
+$a0 0
+$a1 0
+$a2 0
+$a3 0
+$s1 0
+$0 0
+$t4 0
+$sp 0
+$k0 0
+$k1 0
+$s6 -5
+$t7 0
+$s4 0
+$s5 983040
+$s2 0
+$s3 0
+$s0 0
+$t6 0
+$t9 0
+$t8 0
+$s7 0
+$t3 0
+$t2 0
+$t1 0
+$t0 0
+$v1 0
+$v0 0
+$t5 0
+$zero 0
+----------------------------------------------------------
+------------------------ Cycle 6 -------------------------
+--IF/ID Register--
+Instruction:00100010001100010000000000000101
+Incremented Pc:00000000000000000000000000011000
+
+--ID/EXE Register--
+Incremented Pc:00000000000000000000000000011000
+Register 1 Value:10001
+Register 2 Value:10001
+Offset:00000000000000000000000000000101
+rd field:00000
+rt field:10001
+memToReg:0
+regWrite:1
+Branch:0
+memWrite:0
+memRead:0
+ALUSrc:1
+RegDst:1
+ALUOP:100
+
+--EXE/MEM Register--
+Branch Address:00000000000000000000000000101100
+ALU Result:00000000000000000000000000000101
+Register Value:10001
+Target Register:10001
+Zero:0
+Branch:0
+Mem Write:0
+Mem Read:0
+Reg Write:1
+Mem To Register:0
+
+--MEM/WB Register--
+ALU Result:00000000000000000000000000000101
+Memory Read:
+Target Register:10001
+Reg Write:1
+Mem To Reg:0
+
+$fp 0
+$at 0
+$ra 0
+$gp 0
+$a0 0
+$a1 0
+$a2 0
+$a3 0
+$s1 5
+$0 0
+$t4 0
+$sp 0
+$k0 0
+$k1 0
+$s6 -5
+$t7 0
+$s4 0
+$s5 983040
+$s2 0
+$s3 0
+$s0 0
+$t6 0
+$t9 0
+$t8 0
+$s7 0
+$t3 0
+$t2 0
+$t1 0
+$t0 0
+$v1 0
+$v0 0
+$t5 0
+$zero 0
+----------------------------------------------------------

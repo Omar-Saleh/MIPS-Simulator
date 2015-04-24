@@ -23,15 +23,18 @@ class pipelineSimulator(object):
 		self.executeMem = ExecuteMemReg()
 		self.memWrite = MemWriteReg()
 		self.stall = 0
-		print self.memory
-		print i.labels
+		open('ans.txt', 'w').close()
+		self.file = open("ans.txt" , "r+")
 		self.run()
-		for item in self.regs.keys():
-			print item + " " + str(self.reg[self.regs[item]])
+		self.file.close()
 
 
 	#	print self.executeMem.regValue
 
+
+	def writeRegs(self):
+		for item in self.regs.keys():
+			self.file.write(item + " " + str(self.reg[self.regs[item]]) + '\n')
 
 	def fetchStage(self):
 		if self.PCSrc:
@@ -156,6 +159,7 @@ class pipelineSimulator(object):
 
 	def run(self):
 		while not self.isDone:
+			self.cycles = self.cycles + 1
 			self.writeBackStage()
 			if self.isDone:
 				break
@@ -178,11 +182,14 @@ class pipelineSimulator(object):
 	#		print self.decExReg
 	#		print self.executeMem
 	#		print self.memWrite
+			self.file.write("------------------------ Cycle " + str(self.cycles) + " -------------------------" + '\n')
 			self.fetchStage()
-			print self.fetchDec
-			print self.decExReg
-			print self.executeMem
-			print self.memWrite
+			self.file.write(str(self.fetchDec) + '\n')
+			self.file.write(str(self.decExReg) + '\n')
+			self.file.write(str(self.executeMem) + '\n')
+			self.file.write(str(self.memWrite) + '\n')
+			self.writeRegs()
+			self.file.write("----------------------------------------------------------" + '\n')
 			# print self.reg
 
 	def control(self , opcode):
