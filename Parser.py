@@ -104,7 +104,7 @@ class Parser(object):
 			# Handling Memory Loads/Stores
 			elif instr[0] == 'lw' or instr[0] == 'sw' or instr[0] ==  'lbu' or instr[0] == 'sb' or instr[0] == 'lb':
 				target = instr[2].replace('(' , ' ').replace(')' , ' ').split()
-				self.memory[self.pc + ((count + self.extra) * 4)] = self.op[instr[0]] + self.reg[target[1]] + self.reg[instr[1]] + ans + calculateOffSet(int(target[0]))
+				self.memory[self.pc + ((count + self.extra) * 4)] = self.op[instr[0]] + self.reg[target[1]] + self.reg[instr[1]] + calculateOffSet(int(target[0]))
 			elif instr[0] == 'lui':
 				self.memory[self.pc + ((count + self.extra) * 4)] = self.op[instr[0]] + "00000" + self.reg[instr[1]] + calculateOffSet(int(instr[2]))
 			# Handling branches

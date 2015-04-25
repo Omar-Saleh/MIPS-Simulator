@@ -3,5 +3,5 @@
 .start: 0x10
 jal try
 halt
-try : addi $s5 , $s5 , 5
+try : addi $s5 , $s5 , 8
 jr $ra

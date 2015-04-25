@@ -37,6 +37,7 @@ class pipelineSimulator(object):
 		self.file.write("Time Elapsed by Single Cycle = " + str(Time_Elapsed_By_single) + '\n')
 		improv = float(Time_Elapsed_By_pipeline/Time_Elapsed_By_single) * 100
 		self.file.write("This represents a " + str(improv) + "improvment")
+		print self.memory
 		self.file.close()
 
 
@@ -181,9 +182,9 @@ class pipelineSimulator(object):
 					self.memory[int(self.executeMem.ALUResult , 2)] = calculateNum(self.executeMem.regValue)
 			elif(self.executeMem.memRead):
 				if self.executeMem.signExtend:
-					self.memWrite.memRead = signExtend(calculateComplement(int(self.memory[str(int(self.executeMem.ALUResult , 2))])))
+					self.memWrite.memRead = signExtend(calculateComplement(int(self.memory[int(self.executeMem.ALUResult , 2)])))
 				else:
-					self.memWrite.memRead = calculateComplement(int(self.memory[str(int(self.executeMem.ALUResult , 2))]))
+					self.memWrite.memRead = calculateComplement(int(self.memory[int(self.executeMem.ALUResult , 2)	]))
 			self.memWrite.start = True
 			self.executeMem.advance(self.memWrite)
 
