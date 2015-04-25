@@ -14,7 +14,7 @@ class pipelineSimulator(object):
 		self.pc = calculateComplement(i.pc)
 		self.PCSrc = 0
 		self.reg = {'11110':0 , '00001':0, '11111':0, '11100':0, '00100':0, '00101':0, '00110':0, '00111':0, '10001':0, '00000':0
-		, '01100':0, '11101':0, '11010':0, '11011':0, '10110':-5, '01111':0, '10100':0, '10101':0, '10010':0, '10011':0, '10000':0
+		, '01100':0, '11101':0, '11010':0, '11011':0, '10110':-5, '01111':0, '10100':0, '10101':0, '10010':0, '10011':0, '10000':5
 		, '01110':0, '11001':0, '11000':0, '10111':0, '01011':0, '01010':0, '01001':0, '01000':0, '00011':0, '00010':0, '01101':0
 		, '00000':0}
 		self.regs = i.getReg()
@@ -39,12 +39,13 @@ class pipelineSimulator(object):
 	def fetchStage(self):
 		if self.PCSrc:
 			pc = calculateNum(self.branchAddre)
-			print "!!!"
-			print pc
+			self.PCSrc = 0
+			# print "!!!"
+			# print pc
 			#print self.branchAddre
 		else:
 			pc = calculateNum(self.pc)
-		#print pc
+		print pc
 		if pc in self.memory and not self.stall:
 			instr = self.memory[pc]
 			if "0" * 32 in instr:
@@ -123,10 +124,11 @@ class pipelineSimulator(object):
 			self.executeMem.advance(self.memWrite)
 		if self.executeMem.start:
 			if self.executeMem.branch and self.executeMem.zero:
-				print "here"
+				# print "here"
 				self.branchAddre = self.executeMem.branchAddre
 				self.PCSrc = 1
 			if self.executeMem.notBranch and not self.executeMem.zero:
+				# print "here"
 				self.branchAddre = self.executeMem.branchAddre
 				self.PCSrc = 1
 			if self.executeMem.branch or self.executeMem.notBranch:
@@ -178,12 +180,12 @@ class pipelineSimulator(object):
 	#		print self.executeMem
 	#		print self.memWrite
 			self.decodeStage()
-	#		print self.fetchDec
-	#		print self.decExReg
-	#		print self.executeMem
-	#		print self.memWrite
-			self.file.write("------------------------ Cycle " + str(self.cycles) + " -------------------------" + '\n')
+			# print self.fetchDec
+			# print self.decExReg
+			# print self.executeMem
+			# print self.memWrite
 			self.fetchStage()
+			self.file.write("------------------------ Cycle " + str(self.cycles) + " -------------------------" + '\n')
 			self.file.write(str(self.fetchDec) + '\n')
 			self.file.write(str(self.decExReg) + '\n')
 			self.file.write(str(self.executeMem) + '\n')
