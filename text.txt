@@ -1,8 +1,7 @@
 .data
 4 128
 .start: 010
-jr $s0
-addi $s4, $s4, 5
-addi $s5 , $s5 , 10
-me : addi $s1, $s1, 10
+loop : addi $s1 , $s1 , 1
+addi $s2 , $s2 , 1
+bne $s1 , $s0 , loop
 halt

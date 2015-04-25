@@ -13,7 +13,7 @@ class pipelineSimulator(object):
 		self.stall = 0
 		self.pc = calculateComplement(i.pc)
 		self.PCSrc = "00"
-		self.reg = {'11110':0 , '00001':0, '11111':0, '11100':0, '00100':0, '00101':0, '00110':0, '00111':0, '10001':0, '00000':0
+		self.reg = {'11110':0 , '00001':0, '11111':0, '11100':0, '00100':0, '00101':0, '00110':0, '00111':0, '10001':0, '00000':0head
 		, '01100':0, '11101':0, '11010':0, '11011':0, '10110':0, '01111':0, '10100':0, '10101':0, '10010':0, '10011':0, '10000':24
 		, '01110':0, '11001':0, '11000':0, '10111':0, '01011':0, '01010':0, '01001':0, '01000':0, '00011':0, '00010':0, '01101':0
 		, '00000':0}
@@ -23,21 +23,26 @@ class pipelineSimulator(object):
 		self.executeMem = ExecuteMemReg()
 		self.memWrite = MemWriteReg()
 		self.stall = 0
-		print self.memory
-		print i.labels
+		open('ans.txt', 'w').close()
+		self.file = open("ans.txt" , "r+")
 		self.run()
-		for item in self.regs.keys():
-			print item + " " + str(self.reg[self.regs[item]])
+		self.file.close()
 
 
 	#	print self.executeMem.regValue
 
+
+	def writeRegs(self):
+		for item in self.regs.keys():
+			self.file.write(item + " " + str(self.reg[self.regs[item]]) + '\n')
 
 	def fetchStage(self):
 		print self.PCSrc	
 		if "01" in self.PCSrc:
 			pc = calculateNum(self.branchAddre)
 			self.PCSrc = "00"
+			# print "!!!"
+			# print pc
 			#print self.branchAddre
 		elif "00" in self.PCSrc:
 			pc = calculateNum(self.pc)
@@ -142,10 +147,11 @@ class pipelineSimulator(object):
 			self.executeMem.advance(self.memWrite)
 		if self.executeMem.start:
 			if self.executeMem.branch and self.executeMem.zero:
-				#print "here"
+				# print "here"
 				self.branchAddre = self.executeMem.branchAddre
 				self.PCSrc = "01"
 			if self.executeMem.notBranch and not self.executeMem.zero:
+				# print "here"
 				self.branchAddre = self.executeMem.branchAddre
 				self.PCSrc = "01"
 			if self.executeMem.branch or self.executeMem.notBranch:
@@ -178,6 +184,7 @@ class pipelineSimulator(object):
 
 	def run(self):
 		while not self.isDone:
+			self.cycles = self.cycles + 1
 			self.writeBackStage()
 			if self.isDone:
 				break
@@ -196,15 +203,22 @@ class pipelineSimulator(object):
 	#		print self.executeMem
 	#		print self.memWrite
 			self.decodeStage()
-	#		print self.fetchDec
-	#		print self.decExReg
-	#		print self.executeMem
-	#		print self.memWrite
+			# print self.fetchDec
+			# print self.decExReg
+			# print self.executeMem
+			# print self.memWrite
 			self.fetchStage()
 			# print self.fetchDec
 			# print self.decExReg
 			# print self.executeMem
 			# print self.memWrite
+			self.file.write("------------------------ Cycle " + str(self.cycles) + " -------------------------" + '\n')
+			self.file.write(str(self.fetchDec) + '\n')
+			self.file.write(str(self.decExReg) + '\n')
+			self.file.write(str(self.executeMem) + '\n')
+			self.file.write(str(self.memWrite) + '\n')
+			self.writeRegs()
+			self.file.write("----------------------------------------------------------" + '\n')
 			# print self.reg
 
 	def control(self , opcode):
