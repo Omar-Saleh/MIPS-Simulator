@@ -38,7 +38,7 @@ class Parser(object):
 		while "start" not in lines[i].lower():
 			if lines[i]:
 				info = lines[i].split()
-				self.memory[info[0]] = info[1]
+				self.memory[int(info[0] , 16)] = info[1]
 			i = i + 1
 
 		instructions = [lines[i].replace(',' , ' ') for i in range(i , len(lines))]
