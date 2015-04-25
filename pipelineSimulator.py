@@ -13,8 +13,8 @@ class pipelineSimulator(object):
 		self.stall = 0
 		self.pc = calculateComplement(i.pc)
 		self.PCSrc = "00"
-		self.reg = {'11110':0 , '00001':0, '11111':0, '11100':0, '00100':0, '00101':0, '00110':0, '00111':0, '10001':0, '00000':0head
-		, '01100':0, '11101':0, '11010':0, '11011':0, '10110':0, '01111':0, '10100':0, '10101':0, '10010':0, '10011':0, '10000':24
+		self.reg = {'11110':0 , '00001':0, '11111':0, '11100':0, '00100':0, '00101':0, '00110':0, '00111':0, '10001':0, '00000':0
+		, '01100':0, '11101':0, '11010':0, '11011':0, '10110':0, '01111':0, '10100':0, '10101':0, '10010':0, '10011':0, '10000':5
 		, '01110':0, '11001':0, '11000':0, '10111':0, '01011':0, '01010':0, '01001':0, '01000':0, '00011':0, '00010':0, '01101':0
 		, '00000':0}
 		self.regs = i.getReg()
@@ -37,7 +37,7 @@ class pipelineSimulator(object):
 			self.file.write(item + " " + str(self.reg[self.regs[item]]) + '\n')
 
 	def fetchStage(self):
-		print self.PCSrc	
+		# print self.PCSrc	
 		if "01" in self.PCSrc:
 			pc = calculateNum(self.branchAddre)
 			self.PCSrc = "00"
@@ -47,10 +47,10 @@ class pipelineSimulator(object):
 		elif "00" in self.PCSrc:
 			pc = calculateNum(self.pc)
 		else:
-			print "here" + str(self.stall)
+			# print "here" + str(self.stall)
 			pc = calculateNum(self.jumpAddre)
 			self.PCSrc = "00"
-		print pc
+		# print pc
 		if pc in self.memory and not self.stall:
 			instr = self.memory[pc]
 			if "0" * 32 in instr:
@@ -87,7 +87,6 @@ class pipelineSimulator(object):
 				self.decExReg.start = True
 				self.decExReg.jumpAddre = instr[6:32:1]
 				if "001000" in self.decExReg.offset[26:32]:
-					print "here"
 					self.decExReg.jr = 1
 					self.stall = 1
 					self.decExReg.regWrite = 0
@@ -106,7 +105,10 @@ class pipelineSimulator(object):
 			if self.decExReg.jr:
 				self.jumpAddre = self.decExReg.reg1
 				self.PCSrc = "11"
-			if self.decExReg.jump or self.decExReg.jr:
+			if self.decExReg.jal:
+				self.jumpAddre = self.decExReg.incPC[0:5:1] + calculateComplement((calculateNum(self.decExReg.jumpAddre) << 2))
+				self.PCSrc = "11"
+			if self.decExReg.jump or self.decExReg.jr or self.decExReg.jal:
 				self.stall = 0
 			src1 = self.decExReg.reg1
 			if self.decExReg.ALUSrc:
@@ -133,6 +135,8 @@ class pipelineSimulator(object):
 			if "0100" in ALUcontrol or "0011" in ALUcontrol:
 				# print "here"
 				src1 = self.decExReg.offset[21:26:1]
+			if "1101" in ALUcontrol:
+				src1 = self.decExReg.incPC
 			# print self.decExReg.offset[21:26:1]
 			# print src1
 			# print src2
@@ -175,6 +179,8 @@ class pipelineSimulator(object):
 			self.isDone = True
 		if self.memWrite.start:
 			if(self.memWrite.regWrite):
+				if(self.memWrite.jal):
+					self.reg['11111'] =  calculateNum(self.memWrite.ALUResult)
 				if(self.memWrite.memToReg):
 					self.reg[self.memWrite.rd] = calculateNum(self.memWrite.memRead)
 				else:	
@@ -238,6 +244,7 @@ class pipelineSimulator(object):
 			self.decExReg.signExtend = 0
 			self.decExReg.jump = 0
 			self.decExReg.jr = 0
+			self.decExReg.jal = 0
 		#addi
 		elif "001000" in opcode:
 			self.decExReg.regWrite = 1 
@@ -254,6 +261,7 @@ class pipelineSimulator(object):
 			self.decExReg.signExtend = 0
 			self.decExReg.jump = 0
 			self.decExReg.jr = 0
+			self.decExReg.jal = 0
 		# lw/lbu
 		elif "100011" in opcode or "100100" in opcode:
 			self.decExReg.regWrite = 1
@@ -270,6 +278,7 @@ class pipelineSimulator(object):
 			self.decExReg.signExtend = 0
 			self.decExReg.jump = 0
 			self.decExReg.jr = 0
+			self.decExReg.jal = 0
 		# lb
 		elif "100000" in opcode:
 			self.decExReg.regWrite = 1
@@ -286,6 +295,7 @@ class pipelineSimulator(object):
 			self.decExReg.signExtend = 1
 			self.decExReg.jump = 0
 			self.decExReg.jr = 0
+			self.decExReg.jal = 0
 		#sw
 		elif "101011" in opcode:
 			self.decExReg.regWrite = 0
@@ -302,6 +312,7 @@ class pipelineSimulator(object):
 			self.decExReg.signExtend = 0
 			self.decExReg.jump = 0
 			self.decExReg.jr = 0
+			self.decExReg.jal = 0
 		#sb
 		elif "101000" in opcode:
 			self.decExReg.regWrite = 0
@@ -318,6 +329,7 @@ class pipelineSimulator(object):
 			self.decExReg.signExtend = 0
 			self.decExReg.jump = 0
 			self.decExReg.jr = 0
+			self.decExReg.jal = 0
 		#lui
 		elif "001111" in opcode:
 			self.decExReg.regWrite = 1
@@ -334,6 +346,7 @@ class pipelineSimulator(object):
 			self.decExReg.signExtend = 0
 			self.decExReg.jump = 0	
 			self.decExReg.jr = 0
+			self.decExReg.jal = 0
 		#beq
 		elif "000100" in opcode:
 			self.decExReg.regWrite = 0
@@ -351,6 +364,7 @@ class pipelineSimulator(object):
 			self.stall = 1
 			self.decExReg.jump = 0
 			self.decExReg.jr = 0
+			self.decExReg.jal = 0
 		#stall
 		elif "111111" in opcode:
 			self.decExReg.regWrite = 0
@@ -366,6 +380,7 @@ class pipelineSimulator(object):
 			self.decExReg.signExtend = 0
 			self.decExReg.jump = 0
 			self.decExReg.jr = 0
+			self.decExReg.jal = 0
 		# bne
 		elif "000101" in opcode:
 			self.decExReg.regWrite = 0
@@ -383,6 +398,7 @@ class pipelineSimulator(object):
 			self.stall = 1
 			self.decExReg.jump = 0
 			self.decExReg.jr = 0
+			self.decExReg.jal = 0
 		#j
 		elif "000010" in opcode:
 			self.decExReg.regWrite = 0
@@ -400,6 +416,24 @@ class pipelineSimulator(object):
 			self.stall = 1
 			self.decExReg.jump = 1
 			self.decExReg.jr = 0
+			self.decExReg.jal = 0
+		#jal
+		elif "000011" in opcode:
+			self.decExReg.regWrite = 1
+			self.decExReg.RegDst = 0
+			self.decExReg.ALUSrc = 0
+			self.decExReg.memRead = 0
+			self.decExReg.memWrite = 0
+			self.decExReg.memToReg = 0
+			self.decExReg.ALUOP = "101"
+			self.decExReg.branch = 0
+			self.decExReg.notBranch = 0
+			self.decExReg.swByte = 0
+			self.decExReg.signExtend = 0
+			self.stall = 1
+			self.decExReg.jump = 0
+			self.decExReg.jr = 0
+			self.decExReg.jal = 1
 
 		
 
@@ -417,7 +451,7 @@ class FetchDecReg(object):
 
 
 	def __repr__(self):
-		return "--IF/ID Register--\nInstruction:%s\nIncremented Pc:%s\n" % (self.instruction , self.incPC)
+		return "--IF/ID Register--\nInstruction:%s\nIncremented Pc:%s\nStart:%s\nDone:%s\n" % (self.instruction , self.incPC , self.start , self.done)
 
 
 
@@ -441,13 +475,13 @@ class DecExReg(object):
 		self.RegDst = 0
 		self.swByte = 0
 		self.signExtend = 0	
-		self.PCSrc = 0
 		self.ALUOP = ""
 		self.start = False
 		self.done = False
 		self.jump = 0
 		self.jumpAddre = ""
 		self.jr = 0
+		self.jal = 0
 
 	def advance(self, executeMemReg):
 		executeMemReg.memWrite = self.memWrite
@@ -458,12 +492,13 @@ class DecExReg(object):
 		executeMemReg.memRead = self.memRead
 		executeMemReg.swByte = self.swByte
 		executeMemReg.signExtend = self.signExtend	
-		executeMemReg.PCSrc = self.PCSrc
 		executeMemReg.done = self.done
+		executeMemReg.jal = self.jal
 
 	def __repr__(self):
-		return "--ID/EXE Register--\nIncremented Pc:%s\nRegister 1 Value:%s\nRegister 2 Value:%s\nOffset:%s\nrd field:%s\nrt field:%s\nmemToReg:%d\nregWrite:%d\nBranch:%d\nmemWrite:%d\nmemRead:%d\nALUSrc:%d\nRegDst:%d\nALUOP:%s\n" % (self.incPC , self.reg1 , self.reg2 , self.offset , self.rd , self.rt , self.memToReg , self.regWrite , self.branch , self.memWrite , self.memRead , self.ALUSrc , self.RegDst , self.ALUOP)
-
+		return "--ID/EXE Register--\nIncremented Pc:%s\nRegister 1 Value:%s\nRegister 2 Value:%s\nOffset:%s\nrd field:%s\n" \
+		"rt field:%s\nmemToReg:%d\nregWrite:%d\nBranch:%d\nNot Branch:%d\nmemWrite:%d\nmemRead:%d\nALUSrc:%d\nRegDst:%d\nStore Byte:%d\nSign Extend:%d\nALUOP:%s\n" \
+		"Start:%s\nDone:%s\nJump:%d\nJump Address:%s\nJump Register:%d\nJump And Link:%d\n" % (self.incPC , self.reg1 , self.reg2 , self.offset , self.rd , self.rt , self.memToReg , self.regWrite , self.branch , self.notBranch , self.memWrite , self.memRead , self.ALUSrc , self.RegDst , self.swByte , self.signExtend , self.ALUOP ,self.start , self.done , self.jump , self.jumpAddre , self.jr , self.jal )
 
 class ExecuteMemReg(object):
 	"""Execute/Memory Register"""
@@ -481,22 +516,22 @@ class ExecuteMemReg(object):
 		self.memToReg = 0
 		self.swByte = 0
 		self.signExtend = 0	
-		self.PCSrc = 0
 		self.start = False
 		self.done = False
-		self.jump = 0
+		self.jal = 0
 
 	def advance(self , memWriteReg):
 		memWriteReg.ALUResult = self.ALUResult
 		memWriteReg.rd = self.rd
 		memWriteReg.regWrite = self.regWrite
 		memWriteReg.memToReg = self.memToReg
-		memWriteReg.PCSrc = self.PCSrc
 		memWriteReg.done = self.done
+		memWriteReg.jal = self.jal
 
 
 	def __repr__(self):
-		return "--EXE/MEM Register--\nBranch Address:%s\nALU Result:%s\nRegister Value:%s\nTarget Register:%s\nZero:%d\nBranch:%d\nMem Write:%d\nMem Read:%d\nReg Write:%d\nMem To Register:%d\n" % (self.branchAddre , self.ALUResult ,self.regValue ,self.rd,self.zero,self.branch,self.memWrite,self.memRead,self.regWrite,self.memToReg)
+		return "--EXE/MEM Register--\nBranch Address:%s\nALU Result:%s\nRegister Value:%s\nTarget Register:%s\nZero:%d\nBranch:%d\n" \
+		"Mem Write:%d\nMem Read:%d\nReg Write:%d\nMem To Register:%d\nStore Byte:%d\nSign Extend:%d\nStart:%s\nDone:%s\nJump And Link:%d\n" % (self.branchAddre , self.ALUResult ,self.regValue ,self.rd,self.zero,self.branch,self.memWrite,self.memRead,self.regWrite,self.memToReg ,self.swByte ,self.signExtend ,self.start ,self.done ,self.jal)
 
 
 class MemWriteReg(object):
@@ -508,11 +543,11 @@ class MemWriteReg(object):
 		self.rd = ""
 		self.regWrite = 0
 		self.memToReg = 0
-		self.PCSrc = 0
 		self.done = False
 
 	def __repr__(self):
-		return "--MEM/WB Register--\nALU Result:%s\nMemory Read:%s\nTarget Register:%s\nReg Write:%d\nMem To Reg:%d\n" % (self.ALUResult , self.memRead , self.rd , self.regWrite , self.memToReg)
+		return "--MEM/WB Register--\nALU Result:%s\nMemory Read:%s\nTarget Register:%s\nReg Write:%d\nMem To Reg:%d\n" \
+		"Done:%s\n"% (self.ALUResult , self.memRead , self.rd , self.regWrite , self.memToReg , self.done)
 
 
 
@@ -530,6 +565,10 @@ def ALUControl(ALUOp , func):
 	# addi
 	elif "100" in ALUOp:
 		return "0010"
+	#jal
+	elif "101" in ALUOp:
+		return "1101"
+	# stall
 	elif "111" in ALUOp:
 		return "1111"
 	elif "010" in ALUOp:
@@ -603,7 +642,7 @@ def ALU(ALUcontrol ,src1 , src2):
 	# nor
 	elif "1100" in ALUcontrol:
 		return calculateComplement(~(calculateNum(src1) | calculateNum(src2)))
-	# jr
+	# jal
 	elif "1101" in ALUcontrol:
 		return src1
 	elif "1111" in ALUcontrol:

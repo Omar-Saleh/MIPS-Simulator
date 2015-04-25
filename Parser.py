@@ -7,6 +7,7 @@ class Parser(object):
 	"""
 	def __init__(self , filename):
 		self.noop = ['add' , 'sub' , 'and' , 'slt' , 'sltu' , 'nor' , 'sll' , 'srl' , 'jr']
+		self.pseudo = ['move' , 'blt' , 'bgt']
 		self.reg = {'$0':"00000" ,'$zero':"00000" ,'$at':"00001" ,'$v0':"00010" ,
 					'$v1':"00011" ,'$a0':"00100" ,'$a1':"00101" ,'$a2':"00110" ,
 					'$a3':"00111" ,'$t0':"01000" ,'$t1':"01001" ,'$t2':"01010" ,'$t3':"01011" ,
@@ -17,7 +18,7 @@ class Parser(object):
 					'$gp':"11100" ,'$sp':"11101" ,'$fp':"11110" ,'$ra':"11111" }
 
 		self.op = { 'addi':"001000" , 'beq':"000100", 'bne':"000101" , 'lw':"100011" , 'lbu':"100100" , 
-					'sw':"101011" , 'sb':"101000" , 'lui':"001111" , 'j':"000010" , 'jal':"000010" , 'lb':"100000"}
+					'sw':"101011" , 'sb':"101000" , 'lui':"001111" , 'j':"000010" , 'jal':"000011" , 'lb':"100000"}
 
 		self.func = {'add':"100000" , 'and':"100100" , 'jr':"001000" , 'nor':"100111" , 'slt':"101010" ,
 					 'sltu':"101011" , 'srl':"000010" , 'sll':"000000" , 'sub':"100010" }
@@ -26,6 +27,7 @@ class Parser(object):
 		
 		self.memory = {}
 		
+		self.extra = 0
 
 		with open(filename , "r+") as my_file:
 			lines = my_file.read().splitlines()	
@@ -66,8 +68,12 @@ class Parser(object):
 		if split_Index > 0:
 			instr = instr[instr.index(':') + 1::1]
 
-		if len(instr) == 1:
+		# Halt
+		if len(instr) == 1 and "halt" in instr[0].lower():
 			ans = "0" * 32
+		# Handling pseudo
+		if instr[0] in self.pseudo:
+			ans = self.handlePseudo(instr)
 		# Handling R-Type instructions
 		if instr[0] in self.noop and "jr" not in instr[0]:
 			if "srl" in instr[0] or "sll" in instr[0]:
@@ -118,6 +124,16 @@ class Parser(object):
 			elif ':' in line:
 				self.labels[line.replace(':' , '').split()[0]] = counter
 
+	def handlePseudo(self , instr):
+		if "move" in instr[0]:
+			return self.op['addi'] + self.reg[instr[2]] + self.reg[instr[1]] + "0" * 16
+		elif "blt" in instr[0]:
+			self.extra = self.extra + 1
+
+		elif "bgt" in instr[0]:
+			self.extra = self.extra + 1
+
+	
 	def getMemory(self):
 		return self.memory
 

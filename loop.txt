@@ -1,0 +1,8 @@
+.data
+4 128
+.start: 010
+loop : addi $s1 , $s1 , 1
+addi $s2 , $s2 , 1
+addi $0 , $s3 , 1
+bne $s1 , $s0 , loop
+halt

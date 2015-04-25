@@ -1,7 +1,0 @@
-.data
-0x4 128
-.start: 0x10
-loop : addi $s1 , $s1 , 1
-addi $s2 , $s2 , 1
-bne $s1 , $s0 , loop
-halt

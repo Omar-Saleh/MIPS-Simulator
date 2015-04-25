@@ -2,6 +2,8 @@
 --IF/ID Register--
 Instruction:00100010001100010000000000000001
 Incremented Pc:00000000000000000000000000010100
+Start:True
+Done:False
 
 --ID/EXE Register--
 Incremented Pc:
@@ -13,11 +15,20 @@ rt field:
 memToReg:0
 regWrite:0
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
 ALUSrc:0
 RegDst:0
+Store Byte:0
+Sign Extend:0
 ALUOP:
+Start:False
+Done:False
+Jump:0
+Jump Address:
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
 Branch Address:
@@ -30,6 +41,11 @@ Mem Write:0
 Mem Read:0
 Reg Write:0
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:False
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
 ALU Result:
@@ -37,6 +53,7 @@ Memory Read:
 Target Register:
 Reg Write:0
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -52,7 +69,7 @@ $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
@@ -76,22 +93,33 @@ $zero 0
 --IF/ID Register--
 Instruction:00100010010100100000000000000001
 Incremented Pc:00000000000000000000000000011000
+Start:True
+Done:False
 
 --ID/EXE Register--
 Incremented Pc:00000000000000000000000000010100
-Register 1 Value:10001
-Register 2 Value:10001
+Register 1 Value:00000000000000000000000000000000
+Register 2 Value:00000000000000000000000000000000
 Offset:00000000000000000000000000000001
 rd field:00000
 rt field:10001
 memToReg:0
 regWrite:1
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
 ALUSrc:1
 RegDst:1
+Store Byte:0
+Sign Extend:0
 ALUOP:100
+Start:True
+Done:False
+Jump:0
+Jump Address:10001100010000000000000001
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
 Branch Address:
@@ -104,6 +132,11 @@ Mem Write:0
 Mem Read:0
 Reg Write:0
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:False
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
 ALU Result:
@@ -111,6 +144,7 @@ Memory Read:
 Target Register:
 Reg Write:0
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -126,7 +160,7 @@ $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
@@ -148,24 +182,35 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 3 -------------------------
 --IF/ID Register--
-Instruction:00010110001100001111111111111101
+Instruction:00100010011000000000000000000001
 Incremented Pc:00000000000000000000000000011100
+Start:True
+Done:False
 
 --ID/EXE Register--
 Incremented Pc:00000000000000000000000000011000
-Register 1 Value:10010
-Register 2 Value:10010
+Register 1 Value:00000000000000000000000000000000
+Register 2 Value:00000000000000000000000000000000
 Offset:00000000000000000000000000000001
 rd field:00000
 rt field:10010
 memToReg:0
 regWrite:1
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
 ALUSrc:1
 RegDst:1
+Store Byte:0
+Sign Extend:0
 ALUOP:100
+Start:True
+Done:False
+Jump:0
+Jump Address:10010100100000000000000001
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
 Branch Address:00000000000000000000000000011000
@@ -178,6 +223,11 @@ Mem Write:0
 Mem Read:0
 Reg Write:1
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
 ALU Result:
@@ -185,6 +235,7 @@ Memory Read:
 Target Register:
 Reg Write:0
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -200,7 +251,7 @@ $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
@@ -222,24 +273,35 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 4 -------------------------
 --IF/ID Register--
-Instruction:11111111111111111111111111111111
-Incremented Pc:00000000000000000000000000011100
+Instruction:00010110001100001111111111111100
+Incremented Pc:00000000000000000000000000100000
+Start:True
+Done:False
 
 --ID/EXE Register--
 Incremented Pc:00000000000000000000000000011100
-Register 1 Value:10001
-Register 2 Value:10000
-Offset:11111111111111111111111111111101
-rd field:11111
-rt field:10000
+Register 1 Value:00000000000000000000000000000000
+Register 2 Value:00000000000000000000000000000000
+Offset:00000000000000000000000000000001
+rd field:00000
+rt field:00000
 memToReg:0
-regWrite:0
+regWrite:1
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
-ALUSrc:0
+ALUSrc:1
 RegDst:1
-ALUOP:001
+Store Byte:0
+Sign Extend:0
+ALUOP:100
+Start:True
+Done:False
+Jump:0
+Jump Address:10011000000000000000000001
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
 Branch Address:00000000000000000000000000011100
@@ -252,6 +314,11 @@ Mem Write:0
 Mem Read:0
 Reg Write:1
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
 ALU Result:00000000000000000000000000000001
@@ -259,6 +326,7 @@ Memory Read:
 Target Register:10001
 Reg Write:1
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -274,7 +342,7 @@ $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
@@ -297,35 +365,51 @@ $zero 0
 ------------------------ Cycle 5 -------------------------
 --IF/ID Register--
 Instruction:11111111111111111111111111111111
-Incremented Pc:00000000000000000000000000011100
+Incremented Pc:00000000000000000000000000100000
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000011100
-Register 1 Value:11111
-Register 2 Value:11111
-Offset:11111111111111111111111111111111
+Incremented Pc:00000000000000000000000000100000
+Register 1 Value:00000000000000000000000000000001
+Register 2 Value:00000000000000000000000000000101
+Offset:11111111111111111111111111111100
 rd field:11111
-rt field:11111
+rt field:10000
 memToReg:0
 regWrite:0
 Branch:0
+Not Branch:1
 memWrite:0
 memRead:0
 ALUSrc:0
-RegDst:0
-ALUOP:111
+RegDst:1
+Store Byte:0
+Sign Extend:0
+ALUOP:001
+Start:True
+Done:False
+Jump:0
+Jump Address:10001100001111111111111100
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000010000
-ALU Result:00000000000000000000000000000100
-Register Value:10000
-Target Register:10000
+Branch Address:00000000000000000000000000100000
+ALU Result:00000000000000000000000000000001
+Register Value:00000
+Target Register:00000
 Zero:0
 Branch:0
 Mem Write:0
 Mem Read:0
-Reg Write:0
+Reg Write:1
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
 ALU Result:00000000000000000000000000000001
@@ -333,6 +417,7 @@ Memory Read:
 Target Register:10010
 Reg Write:1
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -348,7 +433,7 @@ $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
@@ -370,43 +455,60 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 6 -------------------------
 --IF/ID Register--
-Instruction:00100010001100010000000000000001
-Incremented Pc:00000000000000000000000000010100
+Instruction:11111111111111111111111111111111
+Incremented Pc:00000000000000000000000000100000
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000011100
-Register 1 Value:11111
-Register 2 Value:11111
+Incremented Pc:00000000000000000000000000100000
+Register 1 Value:00000000000000000000000000000000
+Register 2 Value:00000000000000000000000000000000
 Offset:11111111111111111111111111111111
 rd field:11111
 rt field:11111
 memToReg:0
 regWrite:0
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
 ALUSrc:0
 RegDst:0
+Store Byte:0
+Sign Extend:0
 ALUOP:111
+Start:True
+Done:False
+Jump:0
+Jump Address:11111111111111111111111111
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000011000
-ALU Result:None
-Register Value:11111
-Target Register:11111
-Zero:1
+Branch Address:00000000000000000000000000010000
+ALU Result:00000000000000000000000000000100
+Register Value:10000
+Target Register:10000
+Zero:0
 Branch:0
 Mem Write:0
 Mem Read:0
 Reg Write:0
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:00000000000000000000000000000100
+ALU Result:00000000000000000000000000000001
 Memory Read:
-Target Register:10000
-Reg Write:0
+Target Register:00000
+Reg Write:1
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -422,7 +524,7 @@ $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
@@ -444,27 +546,38 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 7 -------------------------
 --IF/ID Register--
-Instruction:00100010010100100000000000000001
-Incremented Pc:00000000000000000000000000011000
+Instruction:00100010001100010000000000000001
+Incremented Pc:00000000000000000000000000010100
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000010100
-Register 1 Value:10001
-Register 2 Value:10001
-Offset:00000000000000000000000000000001
-rd field:00000
-rt field:10001
+Incremented Pc:00000000000000000000000000100000
+Register 1 Value:00000000000000000000000000000000
+Register 2 Value:00000000000000000000000000000000
+Offset:11111111111111111111111111111111
+rd field:11111
+rt field:11111
 memToReg:0
-regWrite:1
+regWrite:0
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
-ALUSrc:1
-RegDst:1
-ALUOP:100
+ALUSrc:0
+RegDst:0
+Store Byte:0
+Sign Extend:0
+ALUOP:111
+Start:True
+Done:False
+Jump:0
+Jump Address:11111111111111111111111111
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000011000
+Branch Address:00000000000000000000000000011100
 ALU Result:None
 Register Value:11111
 Target Register:11111
@@ -474,13 +587,19 @@ Mem Write:0
 Mem Read:0
 Reg Write:0
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:None
+ALU Result:00000000000000000000000000000100
 Memory Read:
-Target Register:11111
+Target Register:10000
 Reg Write:0
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -496,7 +615,7 @@ $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
@@ -518,36 +637,52 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 8 -------------------------
 --IF/ID Register--
-Instruction:00010110001100001111111111111101
-Incremented Pc:00000000000000000000000000011100
+Instruction:00100010010100100000000000000001
+Incremented Pc:00000000000000000000000000011000
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000011000
-Register 1 Value:10010
-Register 2 Value:10010
+Incremented Pc:00000000000000000000000000010100
+Register 1 Value:00000000000000000000000000000001
+Register 2 Value:00000000000000000000000000000001
 Offset:00000000000000000000000000000001
 rd field:00000
-rt field:10010
+rt field:10001
 memToReg:0
 regWrite:1
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
 ALUSrc:1
 RegDst:1
+Store Byte:0
+Sign Extend:0
 ALUOP:100
+Start:True
+Done:False
+Jump:0
+Jump Address:10001100010000000000000001
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000011000
-ALU Result:00000000000000000000000000000010
-Register Value:10001
-Target Register:10001
+Branch Address:00000000000000000000000000011100
+ALU Result:None
+Register Value:11111
+Target Register:11111
 Zero:1
 Branch:0
 Mem Write:0
 Mem Read:0
-Reg Write:1
+Reg Write:0
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
 ALU Result:None
@@ -555,6 +690,7 @@ Memory Read:
 Target Register:11111
 Reg Write:0
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -570,7 +706,7 @@ $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
@@ -592,43 +728,60 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 9 -------------------------
 --IF/ID Register--
-Instruction:11111111111111111111111111111111
+Instruction:00100010011000000000000000000001
 Incremented Pc:00000000000000000000000000011100
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000011100
-Register 1 Value:10001
-Register 2 Value:10000
-Offset:11111111111111111111111111111101
-rd field:11111
-rt field:10000
+Incremented Pc:00000000000000000000000000011000
+Register 1 Value:00000000000000000000000000000001
+Register 2 Value:00000000000000000000000000000001
+Offset:00000000000000000000000000000001
+rd field:00000
+rt field:10010
 memToReg:0
-regWrite:0
+regWrite:1
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
-ALUSrc:0
+ALUSrc:1
 RegDst:1
-ALUOP:001
+Store Byte:0
+Sign Extend:0
+ALUOP:100
+Start:True
+Done:False
+Jump:0
+Jump Address:10010100100000000000000001
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000011100
+Branch Address:00000000000000000000000000011000
 ALU Result:00000000000000000000000000000010
-Register Value:10010
-Target Register:10010
+Register Value:10001
+Target Register:10001
 Zero:1
 Branch:0
 Mem Write:0
 Mem Read:0
 Reg Write:1
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:00000000000000000000000000000010
+ALU Result:None
 Memory Read:
-Target Register:10001
-Reg Write:1
+Target Register:11111
+Reg Write:0
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -644,7 +797,7 @@ $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
@@ -666,43 +819,60 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 10 -------------------------
 --IF/ID Register--
-Instruction:11111111111111111111111111111111
-Incremented Pc:00000000000000000000000000011100
+Instruction:00010110001100001111111111111100
+Incremented Pc:00000000000000000000000000100000
+Start:True
+Done:False
 
 --ID/EXE Register--
 Incremented Pc:00000000000000000000000000011100
-Register 1 Value:11111
-Register 2 Value:11111
-Offset:11111111111111111111111111111111
-rd field:11111
-rt field:11111
+Register 1 Value:00000000000000000000000000000000
+Register 2 Value:00000000000000000000000000000000
+Offset:00000000000000000000000000000001
+rd field:00000
+rt field:00000
 memToReg:0
-regWrite:0
+regWrite:1
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
-ALUSrc:0
-RegDst:0
-ALUOP:111
+ALUSrc:1
+RegDst:1
+Store Byte:0
+Sign Extend:0
+ALUOP:100
+Start:True
+Done:False
+Jump:0
+Jump Address:10011000000000000000000001
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000010000
-ALU Result:00000000000000000000000000000011
-Register Value:10000
-Target Register:10000
-Zero:0
+Branch Address:00000000000000000000000000011100
+ALU Result:00000000000000000000000000000010
+Register Value:10010
+Target Register:10010
+Zero:1
 Branch:0
 Mem Write:0
 Mem Read:0
-Reg Write:0
+Reg Write:1
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
 ALU Result:00000000000000000000000000000010
 Memory Read:
-Target Register:10010
+Target Register:10001
 Reg Write:1
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -712,13 +882,13 @@ $a0 0
 $a1 0
 $a2 0
 $a3 0
-$s1 2
+$s1 1
 $0 0
 $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
@@ -740,43 +910,60 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 11 -------------------------
 --IF/ID Register--
-Instruction:00100010001100010000000000000001
-Incremented Pc:00000000000000000000000000010100
+Instruction:11111111111111111111111111111111
+Incremented Pc:00000000000000000000000000100000
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000011100
-Register 1 Value:11111
-Register 2 Value:11111
-Offset:11111111111111111111111111111111
+Incremented Pc:00000000000000000000000000100000
+Register 1 Value:00000000000000000000000000000010
+Register 2 Value:00000000000000000000000000000101
+Offset:11111111111111111111111111111100
 rd field:11111
-rt field:11111
+rt field:10000
 memToReg:0
 regWrite:0
 Branch:0
+Not Branch:1
 memWrite:0
 memRead:0
 ALUSrc:0
-RegDst:0
-ALUOP:111
+RegDst:1
+Store Byte:0
+Sign Extend:0
+ALUOP:001
+Start:True
+Done:False
+Jump:0
+Jump Address:10001100001111111111111100
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000011000
-ALU Result:None
-Register Value:11111
-Target Register:11111
-Zero:1
+Branch Address:00000000000000000000000000100000
+ALU Result:00000000000000000000000000000001
+Register Value:00000
+Target Register:00000
+Zero:0
 Branch:0
 Mem Write:0
 Mem Read:0
-Reg Write:0
+Reg Write:1
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:00000000000000000000000000000011
+ALU Result:00000000000000000000000000000010
 Memory Read:
-Target Register:10000
-Reg Write:0
+Target Register:10010
+Reg Write:1
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -792,11 +979,11 @@ $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
-$s2 2
+$s2 1
 $s3 0
 $s0 5
 $t6 0
@@ -814,43 +1001,60 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 12 -------------------------
 --IF/ID Register--
-Instruction:00100010010100100000000000000001
-Incremented Pc:00000000000000000000000000011000
+Instruction:11111111111111111111111111111111
+Incremented Pc:00000000000000000000000000100000
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000010100
-Register 1 Value:10001
-Register 2 Value:10001
-Offset:00000000000000000000000000000001
-rd field:00000
-rt field:10001
+Incremented Pc:00000000000000000000000000100000
+Register 1 Value:00000000000000000000000000000000
+Register 2 Value:00000000000000000000000000000000
+Offset:11111111111111111111111111111111
+rd field:11111
+rt field:11111
 memToReg:0
-regWrite:1
+regWrite:0
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
-ALUSrc:1
-RegDst:1
-ALUOP:100
+ALUSrc:0
+RegDst:0
+Store Byte:0
+Sign Extend:0
+ALUOP:111
+Start:True
+Done:False
+Jump:0
+Jump Address:11111111111111111111111111
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000011000
-ALU Result:None
-Register Value:11111
-Target Register:11111
-Zero:1
+Branch Address:00000000000000000000000000010000
+ALU Result:00000000000000000000000000000011
+Register Value:10000
+Target Register:10000
+Zero:0
 Branch:0
 Mem Write:0
 Mem Read:0
 Reg Write:0
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:None
+ALU Result:00000000000000000000000000000001
 Memory Read:
-Target Register:11111
-Reg Write:0
+Target Register:00000
+Reg Write:1
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -866,7 +1070,7 @@ $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
@@ -888,43 +1092,60 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 13 -------------------------
 --IF/ID Register--
-Instruction:00010110001100001111111111111101
-Incremented Pc:00000000000000000000000000011100
+Instruction:00100010001100010000000000000001
+Incremented Pc:00000000000000000000000000010100
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000011000
-Register 1 Value:10010
-Register 2 Value:10010
-Offset:00000000000000000000000000000001
-rd field:00000
-rt field:10010
+Incremented Pc:00000000000000000000000000100000
+Register 1 Value:00000000000000000000000000000000
+Register 2 Value:00000000000000000000000000000000
+Offset:11111111111111111111111111111111
+rd field:11111
+rt field:11111
 memToReg:0
-regWrite:1
+regWrite:0
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
-ALUSrc:1
-RegDst:1
-ALUOP:100
+ALUSrc:0
+RegDst:0
+Store Byte:0
+Sign Extend:0
+ALUOP:111
+Start:True
+Done:False
+Jump:0
+Jump Address:11111111111111111111111111
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000011000
-ALU Result:00000000000000000000000000000011
-Register Value:10001
-Target Register:10001
-Zero:0
+Branch Address:00000000000000000000000000011100
+ALU Result:None
+Register Value:11111
+Target Register:11111
+Zero:1
 Branch:0
 Mem Write:0
 Mem Read:0
-Reg Write:1
+Reg Write:0
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:None
+ALU Result:00000000000000000000000000000011
 Memory Read:
-Target Register:11111
+Target Register:10000
 Reg Write:0
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -940,7 +1161,7 @@ $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
@@ -962,43 +1183,60 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 14 -------------------------
 --IF/ID Register--
-Instruction:11111111111111111111111111111111
-Incremented Pc:00000000000000000000000000011100
+Instruction:00100010010100100000000000000001
+Incremented Pc:00000000000000000000000000011000
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000011100
-Register 1 Value:10001
-Register 2 Value:10000
-Offset:11111111111111111111111111111101
-rd field:11111
-rt field:10000
+Incremented Pc:00000000000000000000000000010100
+Register 1 Value:00000000000000000000000000000010
+Register 2 Value:00000000000000000000000000000010
+Offset:00000000000000000000000000000001
+rd field:00000
+rt field:10001
 memToReg:0
-regWrite:0
+regWrite:1
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
-ALUSrc:0
+ALUSrc:1
 RegDst:1
-ALUOP:001
+Store Byte:0
+Sign Extend:0
+ALUOP:100
+Start:True
+Done:False
+Jump:0
+Jump Address:10001100010000000000000001
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
 Branch Address:00000000000000000000000000011100
-ALU Result:00000000000000000000000000000011
-Register Value:10010
-Target Register:10010
-Zero:0
+ALU Result:None
+Register Value:11111
+Target Register:11111
+Zero:1
 Branch:0
 Mem Write:0
 Mem Read:0
-Reg Write:1
+Reg Write:0
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:00000000000000000000000000000011
+ALU Result:None
 Memory Read:
-Target Register:10001
-Reg Write:1
+Target Register:11111
+Reg Write:0
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -1014,7 +1252,7 @@ $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
@@ -1036,43 +1274,60 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 15 -------------------------
 --IF/ID Register--
-Instruction:11111111111111111111111111111111
+Instruction:00100010011000000000000000000001
 Incremented Pc:00000000000000000000000000011100
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000011100
-Register 1 Value:11111
-Register 2 Value:11111
-Offset:11111111111111111111111111111111
-rd field:11111
-rt field:11111
+Incremented Pc:00000000000000000000000000011000
+Register 1 Value:00000000000000000000000000000010
+Register 2 Value:00000000000000000000000000000010
+Offset:00000000000000000000000000000001
+rd field:00000
+rt field:10010
 memToReg:0
-regWrite:0
+regWrite:1
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
-ALUSrc:0
-RegDst:0
-ALUOP:111
+ALUSrc:1
+RegDst:1
+Store Byte:0
+Sign Extend:0
+ALUOP:100
+Start:True
+Done:False
+Jump:0
+Jump Address:10010100100000000000000001
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000010000
-ALU Result:00000000000000000000000000000010
-Register Value:10000
-Target Register:10000
+Branch Address:00000000000000000000000000011000
+ALU Result:00000000000000000000000000000011
+Register Value:10001
+Target Register:10001
 Zero:0
 Branch:0
 Mem Write:0
 Mem Read:0
-Reg Write:0
+Reg Write:1
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:00000000000000000000000000000011
+ALU Result:None
 Memory Read:
-Target Register:10010
-Reg Write:1
+Target Register:11111
+Reg Write:0
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -1082,13 +1337,13 @@ $a0 0
 $a1 0
 $a2 0
 $a3 0
-$s1 3
+$s1 2
 $0 0
 $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
@@ -1110,43 +1365,60 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 16 -------------------------
 --IF/ID Register--
-Instruction:00100010001100010000000000000001
-Incremented Pc:00000000000000000000000000010100
+Instruction:00010110001100001111111111111100
+Incremented Pc:00000000000000000000000000100000
+Start:True
+Done:False
 
 --ID/EXE Register--
 Incremented Pc:00000000000000000000000000011100
-Register 1 Value:11111
-Register 2 Value:11111
-Offset:11111111111111111111111111111111
-rd field:11111
-rt field:11111
+Register 1 Value:00000000000000000000000000000000
+Register 2 Value:00000000000000000000000000000000
+Offset:00000000000000000000000000000001
+rd field:00000
+rt field:00000
 memToReg:0
-regWrite:0
+regWrite:1
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
-ALUSrc:0
-RegDst:0
-ALUOP:111
+ALUSrc:1
+RegDst:1
+Store Byte:0
+Sign Extend:0
+ALUOP:100
+Start:True
+Done:False
+Jump:0
+Jump Address:10011000000000000000000001
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000011000
-ALU Result:None
-Register Value:11111
-Target Register:11111
-Zero:1
+Branch Address:00000000000000000000000000011100
+ALU Result:00000000000000000000000000000011
+Register Value:10010
+Target Register:10010
+Zero:0
 Branch:0
 Mem Write:0
 Mem Read:0
-Reg Write:0
+Reg Write:1
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:00000000000000000000000000000010
+ALU Result:00000000000000000000000000000011
 Memory Read:
-Target Register:10000
-Reg Write:0
+Target Register:10001
+Reg Write:1
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -1156,17 +1428,17 @@ $a0 0
 $a1 0
 $a2 0
 $a3 0
-$s1 3
+$s1 2
 $0 0
 $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
-$s2 3
+$s2 2
 $s3 0
 $s0 5
 $t6 0
@@ -1184,43 +1456,60 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 17 -------------------------
 --IF/ID Register--
-Instruction:00100010010100100000000000000001
-Incremented Pc:00000000000000000000000000011000
+Instruction:11111111111111111111111111111111
+Incremented Pc:00000000000000000000000000100000
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000010100
-Register 1 Value:10001
-Register 2 Value:10001
-Offset:00000000000000000000000000000001
-rd field:00000
-rt field:10001
+Incremented Pc:00000000000000000000000000100000
+Register 1 Value:00000000000000000000000000000011
+Register 2 Value:00000000000000000000000000000101
+Offset:11111111111111111111111111111100
+rd field:11111
+rt field:10000
 memToReg:0
-regWrite:1
+regWrite:0
 Branch:0
+Not Branch:1
 memWrite:0
 memRead:0
-ALUSrc:1
+ALUSrc:0
 RegDst:1
-ALUOP:100
+Store Byte:0
+Sign Extend:0
+ALUOP:001
+Start:True
+Done:False
+Jump:0
+Jump Address:10001100001111111111111100
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000011000
-ALU Result:None
-Register Value:11111
-Target Register:11111
-Zero:1
+Branch Address:00000000000000000000000000100000
+ALU Result:00000000000000000000000000000001
+Register Value:00000
+Target Register:00000
+Zero:0
 Branch:0
 Mem Write:0
 Mem Read:0
-Reg Write:0
+Reg Write:1
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:None
+ALU Result:00000000000000000000000000000011
 Memory Read:
-Target Register:11111
-Reg Write:0
+Target Register:10010
+Reg Write:1
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -1236,11 +1525,11 @@ $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
-$s2 3
+$s2 2
 $s3 0
 $s0 5
 $t6 0
@@ -1258,43 +1547,60 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 18 -------------------------
 --IF/ID Register--
-Instruction:00010110001100001111111111111101
-Incremented Pc:00000000000000000000000000011100
+Instruction:11111111111111111111111111111111
+Incremented Pc:00000000000000000000000000100000
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000011000
-Register 1 Value:10010
-Register 2 Value:10010
-Offset:00000000000000000000000000000001
-rd field:00000
-rt field:10010
+Incremented Pc:00000000000000000000000000100000
+Register 1 Value:00000000000000000000000000000000
+Register 2 Value:00000000000000000000000000000000
+Offset:11111111111111111111111111111111
+rd field:11111
+rt field:11111
 memToReg:0
-regWrite:1
+regWrite:0
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
-ALUSrc:1
-RegDst:1
-ALUOP:100
+ALUSrc:0
+RegDst:0
+Store Byte:0
+Sign Extend:0
+ALUOP:111
+Start:True
+Done:False
+Jump:0
+Jump Address:11111111111111111111111111
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000011000
-ALU Result:00000000000000000000000000000100
-Register Value:10001
-Target Register:10001
+Branch Address:00000000000000000000000000010000
+ALU Result:00000000000000000000000000000010
+Register Value:10000
+Target Register:10000
 Zero:0
 Branch:0
 Mem Write:0
 Mem Read:0
-Reg Write:1
+Reg Write:0
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:None
+ALU Result:00000000000000000000000000000001
 Memory Read:
-Target Register:11111
-Reg Write:0
+Target Register:00000
+Reg Write:1
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -1310,7 +1616,7 @@ $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
@@ -1332,43 +1638,60 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 19 -------------------------
 --IF/ID Register--
-Instruction:11111111111111111111111111111111
-Incremented Pc:00000000000000000000000000011100
+Instruction:00100010001100010000000000000001
+Incremented Pc:00000000000000000000000000010100
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000011100
-Register 1 Value:10001
-Register 2 Value:10000
-Offset:11111111111111111111111111111101
+Incremented Pc:00000000000000000000000000100000
+Register 1 Value:00000000000000000000000000000000
+Register 2 Value:00000000000000000000000000000000
+Offset:11111111111111111111111111111111
 rd field:11111
-rt field:10000
+rt field:11111
 memToReg:0
 regWrite:0
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
 ALUSrc:0
-RegDst:1
-ALUOP:001
+RegDst:0
+Store Byte:0
+Sign Extend:0
+ALUOP:111
+Start:True
+Done:False
+Jump:0
+Jump Address:11111111111111111111111111
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
 Branch Address:00000000000000000000000000011100
-ALU Result:00000000000000000000000000000100
-Register Value:10010
-Target Register:10010
-Zero:0
+ALU Result:None
+Register Value:11111
+Target Register:11111
+Zero:1
 Branch:0
 Mem Write:0
 Mem Read:0
-Reg Write:1
+Reg Write:0
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:00000000000000000000000000000100
+ALU Result:00000000000000000000000000000010
 Memory Read:
-Target Register:10001
-Reg Write:1
+Target Register:10000
+Reg Write:0
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -1384,7 +1707,7 @@ $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
@@ -1406,43 +1729,60 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 20 -------------------------
 --IF/ID Register--
-Instruction:11111111111111111111111111111111
-Incremented Pc:00000000000000000000000000011100
+Instruction:00100010010100100000000000000001
+Incremented Pc:00000000000000000000000000011000
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000011100
-Register 1 Value:11111
-Register 2 Value:11111
-Offset:11111111111111111111111111111111
-rd field:11111
-rt field:11111
+Incremented Pc:00000000000000000000000000010100
+Register 1 Value:00000000000000000000000000000011
+Register 2 Value:00000000000000000000000000000011
+Offset:00000000000000000000000000000001
+rd field:00000
+rt field:10001
 memToReg:0
-regWrite:0
+regWrite:1
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
-ALUSrc:0
-RegDst:0
-ALUOP:111
+ALUSrc:1
+RegDst:1
+Store Byte:0
+Sign Extend:0
+ALUOP:100
+Start:True
+Done:False
+Jump:0
+Jump Address:10001100010000000000000001
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000010000
-ALU Result:00000000000000000000000000000001
-Register Value:10000
-Target Register:10000
-Zero:0
+Branch Address:00000000000000000000000000011100
+ALU Result:None
+Register Value:11111
+Target Register:11111
+Zero:1
 Branch:0
 Mem Write:0
 Mem Read:0
 Reg Write:0
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:00000000000000000000000000000100
+ALU Result:None
 Memory Read:
-Target Register:10010
-Reg Write:1
+Target Register:11111
+Reg Write:0
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -1452,13 +1792,13 @@ $a0 0
 $a1 0
 $a2 0
 $a3 0
-$s1 4
+$s1 3
 $0 0
 $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
@@ -1480,43 +1820,60 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 21 -------------------------
 --IF/ID Register--
-Instruction:00100010001100010000000000000001
-Incremented Pc:00000000000000000000000000010100
+Instruction:00100010011000000000000000000001
+Incremented Pc:00000000000000000000000000011100
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000011100
-Register 1 Value:11111
-Register 2 Value:11111
-Offset:11111111111111111111111111111111
-rd field:11111
-rt field:11111
+Incremented Pc:00000000000000000000000000011000
+Register 1 Value:00000000000000000000000000000011
+Register 2 Value:00000000000000000000000000000011
+Offset:00000000000000000000000000000001
+rd field:00000
+rt field:10010
 memToReg:0
-regWrite:0
+regWrite:1
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
-ALUSrc:0
-RegDst:0
-ALUOP:111
+ALUSrc:1
+RegDst:1
+Store Byte:0
+Sign Extend:0
+ALUOP:100
+Start:True
+Done:False
+Jump:0
+Jump Address:10010100100000000000000001
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
 Branch Address:00000000000000000000000000011000
-ALU Result:None
-Register Value:11111
-Target Register:11111
-Zero:1
+ALU Result:00000000000000000000000000000100
+Register Value:10001
+Target Register:10001
+Zero:0
 Branch:0
 Mem Write:0
 Mem Read:0
-Reg Write:0
+Reg Write:1
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:00000000000000000000000000000001
+ALU Result:None
 Memory Read:
-Target Register:10000
+Target Register:11111
 Reg Write:0
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -1526,17 +1883,17 @@ $a0 0
 $a1 0
 $a2 0
 $a3 0
-$s1 4
+$s1 3
 $0 0
 $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
-$s2 4
+$s2 3
 $s3 0
 $s0 5
 $t6 0
@@ -1554,43 +1911,60 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 22 -------------------------
 --IF/ID Register--
-Instruction:00100010010100100000000000000001
-Incremented Pc:00000000000000000000000000011000
+Instruction:00010110001100001111111111111100
+Incremented Pc:00000000000000000000000000100000
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000010100
-Register 1 Value:10001
-Register 2 Value:10001
+Incremented Pc:00000000000000000000000000011100
+Register 1 Value:00000000000000000000000000000000
+Register 2 Value:00000000000000000000000000000000
 Offset:00000000000000000000000000000001
 rd field:00000
-rt field:10001
+rt field:00000
 memToReg:0
 regWrite:1
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
 ALUSrc:1
 RegDst:1
+Store Byte:0
+Sign Extend:0
 ALUOP:100
+Start:True
+Done:False
+Jump:0
+Jump Address:10011000000000000000000001
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000011000
-ALU Result:None
-Register Value:11111
-Target Register:11111
-Zero:1
+Branch Address:00000000000000000000000000011100
+ALU Result:00000000000000000000000000000100
+Register Value:10010
+Target Register:10010
+Zero:0
 Branch:0
 Mem Write:0
 Mem Read:0
-Reg Write:0
+Reg Write:1
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:None
+ALU Result:00000000000000000000000000000100
 Memory Read:
-Target Register:11111
-Reg Write:0
+Target Register:10001
+Reg Write:1
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -1600,17 +1974,17 @@ $a0 0
 $a1 0
 $a2 0
 $a3 0
-$s1 4
+$s1 3
 $0 0
 $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
-$s2 4
+$s2 3
 $s3 0
 $s0 5
 $t6 0
@@ -1628,43 +2002,60 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 23 -------------------------
 --IF/ID Register--
-Instruction:00010110001100001111111111111101
-Incremented Pc:00000000000000000000000000011100
+Instruction:11111111111111111111111111111111
+Incremented Pc:00000000000000000000000000100000
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000011000
-Register 1 Value:10010
-Register 2 Value:10010
-Offset:00000000000000000000000000000001
-rd field:00000
-rt field:10010
+Incremented Pc:00000000000000000000000000100000
+Register 1 Value:00000000000000000000000000000100
+Register 2 Value:00000000000000000000000000000101
+Offset:11111111111111111111111111111100
+rd field:11111
+rt field:10000
 memToReg:0
-regWrite:1
+regWrite:0
 Branch:0
+Not Branch:1
 memWrite:0
 memRead:0
-ALUSrc:1
+ALUSrc:0
 RegDst:1
-ALUOP:100
+Store Byte:0
+Sign Extend:0
+ALUOP:001
+Start:True
+Done:False
+Jump:0
+Jump Address:10001100001111111111111100
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000011000
-ALU Result:00000000000000000000000000000101
-Register Value:10001
-Target Register:10001
+Branch Address:00000000000000000000000000100000
+ALU Result:00000000000000000000000000000001
+Register Value:00000
+Target Register:00000
 Zero:0
 Branch:0
 Mem Write:0
 Mem Read:0
 Reg Write:1
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:None
+ALU Result:00000000000000000000000000000100
 Memory Read:
-Target Register:11111
-Reg Write:0
+Target Register:10010
+Reg Write:1
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -1680,11 +2071,11 @@ $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
-$s2 4
+$s2 3
 $s3 0
 $s0 5
 $t6 0
@@ -1703,42 +2094,59 @@ $zero 0
 ------------------------ Cycle 24 -------------------------
 --IF/ID Register--
 Instruction:11111111111111111111111111111111
-Incremented Pc:00000000000000000000000000011100
+Incremented Pc:00000000000000000000000000100000
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000011100
-Register 1 Value:10001
-Register 2 Value:10000
-Offset:11111111111111111111111111111101
+Incremented Pc:00000000000000000000000000100000
+Register 1 Value:00000000000000000000000000000000
+Register 2 Value:00000000000000000000000000000000
+Offset:11111111111111111111111111111111
 rd field:11111
-rt field:10000
+rt field:11111
 memToReg:0
 regWrite:0
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
 ALUSrc:0
-RegDst:1
-ALUOP:001
+RegDst:0
+Store Byte:0
+Sign Extend:0
+ALUOP:111
+Start:True
+Done:False
+Jump:0
+Jump Address:11111111111111111111111111
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000011100
-ALU Result:00000000000000000000000000000101
-Register Value:10010
-Target Register:10010
+Branch Address:00000000000000000000000000010000
+ALU Result:00000000000000000000000000000001
+Register Value:10000
+Target Register:10000
 Zero:0
 Branch:0
 Mem Write:0
 Mem Read:0
-Reg Write:1
+Reg Write:0
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:00000000000000000000000000000101
+ALU Result:00000000000000000000000000000001
 Memory Read:
-Target Register:10001
+Target Register:00000
 Reg Write:1
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -1754,7 +2162,7 @@ $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
@@ -1776,43 +2184,60 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 25 -------------------------
 --IF/ID Register--
-Instruction:11111111111111111111111111111111
-Incremented Pc:00000000000000000000000000011100
+Instruction:00100010001100010000000000000001
+Incremented Pc:00000000000000000000000000010100
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000011100
-Register 1 Value:11111
-Register 2 Value:11111
+Incremented Pc:00000000000000000000000000100000
+Register 1 Value:00000000000000000000000000000000
+Register 2 Value:00000000000000000000000000000000
 Offset:11111111111111111111111111111111
 rd field:11111
 rt field:11111
 memToReg:0
 regWrite:0
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
 ALUSrc:0
 RegDst:0
+Store Byte:0
+Sign Extend:0
 ALUOP:111
+Start:True
+Done:False
+Jump:0
+Jump Address:11111111111111111111111111
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000010000
-ALU Result:00000000000000000000000000000000
-Register Value:10000
-Target Register:10000
+Branch Address:00000000000000000000000000011100
+ALU Result:None
+Register Value:11111
+Target Register:11111
 Zero:1
 Branch:0
 Mem Write:0
 Mem Read:0
 Reg Write:0
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:00000000000000000000000000000101
+ALU Result:00000000000000000000000000000001
 Memory Read:
-Target Register:10010
-Reg Write:1
+Target Register:10000
+Reg Write:0
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -1822,13 +2247,13 @@ $a0 0
 $a1 0
 $a2 0
 $a3 0
-$s1 5
+$s1 4
 $0 0
 $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
@@ -1850,27 +2275,38 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 26 -------------------------
 --IF/ID Register--
-Instruction:11111111111111111111111111111111
-Incremented Pc:00000000000000000000000000011100
+Instruction:00100010010100100000000000000001
+Incremented Pc:00000000000000000000000000011000
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000011100
-Register 1 Value:11111
-Register 2 Value:11111
-Offset:11111111111111111111111111111111
-rd field:11111
-rt field:11111
+Incremented Pc:00000000000000000000000000010100
+Register 1 Value:00000000000000000000000000000100
+Register 2 Value:00000000000000000000000000000100
+Offset:00000000000000000000000000000001
+rd field:00000
+rt field:10001
 memToReg:0
-regWrite:0
+regWrite:1
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
-ALUSrc:0
-RegDst:0
-ALUOP:111
+ALUSrc:1
+RegDst:1
+Store Byte:0
+Sign Extend:0
+ALUOP:100
+Start:True
+Done:False
+Jump:0
+Jump Address:10001100010000000000000001
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000011000
+Branch Address:00000000000000000000000000011100
 ALU Result:None
 Register Value:11111
 Target Register:11111
@@ -1880,13 +2316,19 @@ Mem Write:0
 Mem Read:0
 Reg Write:0
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:00000000000000000000000000000000
+ALU Result:None
 Memory Read:
-Target Register:10000
+Target Register:11111
 Reg Write:0
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -1896,17 +2338,17 @@ $a0 0
 $a1 0
 $a2 0
 $a3 0
-$s1 5
+$s1 4
 $0 0
 $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
-$s2 5
+$s2 4
 $s3 0
 $s0 5
 $t6 0
@@ -1924,36 +2366,52 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 27 -------------------------
 --IF/ID Register--
-Instruction:11111111111111111111111111111111
+Instruction:00100010011000000000000000000001
 Incremented Pc:00000000000000000000000000011100
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000011100
-Register 1 Value:11111
-Register 2 Value:11111
-Offset:11111111111111111111111111111111
-rd field:11111
-rt field:11111
+Incremented Pc:00000000000000000000000000011000
+Register 1 Value:00000000000000000000000000000100
+Register 2 Value:00000000000000000000000000000100
+Offset:00000000000000000000000000000001
+rd field:00000
+rt field:10010
 memToReg:0
-regWrite:0
+regWrite:1
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
-ALUSrc:0
-RegDst:0
-ALUOP:111
+ALUSrc:1
+RegDst:1
+Store Byte:0
+Sign Extend:0
+ALUOP:100
+Start:True
+Done:False
+Jump:0
+Jump Address:10010100100000000000000001
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
 Branch Address:00000000000000000000000000011000
-ALU Result:None
-Register Value:11111
-Target Register:11111
-Zero:1
+ALU Result:00000000000000000000000000000101
+Register Value:10001
+Target Register:10001
+Zero:0
 Branch:0
 Mem Write:0
 Mem Read:0
-Reg Write:0
+Reg Write:1
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
 ALU Result:None
@@ -1961,6 +2419,7 @@ Memory Read:
 Target Register:11111
 Reg Write:0
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -1970,17 +2429,17 @@ $a0 0
 $a1 0
 $a2 0
 $a3 0
-$s1 5
+$s1 4
 $0 0
 $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
-$s2 5
+$s2 4
 $s3 0
 $s0 5
 $t6 0
@@ -1998,43 +2457,60 @@ $zero 0
 ----------------------------------------------------------
 ------------------------ Cycle 28 -------------------------
 --IF/ID Register--
-Instruction:11111111111111111111111111111111
-Incremented Pc:00000000000000000000000000011100
+Instruction:00010110001100001111111111111100
+Incremented Pc:00000000000000000000000000100000
+Start:True
+Done:False
 
 --ID/EXE Register--
 Incremented Pc:00000000000000000000000000011100
-Register 1 Value:11111
-Register 2 Value:11111
-Offset:11111111111111111111111111111111
-rd field:11111
-rt field:11111
+Register 1 Value:00000000000000000000000000000000
+Register 2 Value:00000000000000000000000000000000
+Offset:00000000000000000000000000000001
+rd field:00000
+rt field:00000
 memToReg:0
-regWrite:0
+regWrite:1
 Branch:0
+Not Branch:0
 memWrite:0
 memRead:0
-ALUSrc:0
-RegDst:0
-ALUOP:111
+ALUSrc:1
+RegDst:1
+Store Byte:0
+Sign Extend:0
+ALUOP:100
+Start:True
+Done:False
+Jump:0
+Jump Address:10011000000000000000000001
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000011000
-ALU Result:None
-Register Value:11111
-Target Register:11111
-Zero:1
+Branch Address:00000000000000000000000000011100
+ALU Result:00000000000000000000000000000101
+Register Value:10010
+Target Register:10010
+Zero:0
 Branch:0
 Mem Write:0
 Mem Read:0
-Reg Write:0
+Reg Write:1
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:None
+ALU Result:00000000000000000000000000000101
 Memory Read:
-Target Register:11111
-Reg Write:0
+Target Register:10001
+Reg Write:1
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -2044,17 +2520,17 @@ $a0 0
 $a1 0
 $a2 0
 $a3 0
-$s1 5
+$s1 4
 $0 0
 $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
 $t7 0
 $s4 0
 $s5 0
-$s2 5
+$s2 4
 $s3 0
 $s0 5
 $t6 0
@@ -2073,42 +2549,59 @@ $zero 0
 ------------------------ Cycle 29 -------------------------
 --IF/ID Register--
 Instruction:11111111111111111111111111111111
-Incremented Pc:00000000000000000000000000011100
+Incremented Pc:00000000000000000000000000100000
+Start:True
+Done:False
 
 --ID/EXE Register--
-Incremented Pc:00000000000000000000000000011100
-Register 1 Value:11111
-Register 2 Value:11111
-Offset:11111111111111111111111111111111
+Incremented Pc:00000000000000000000000000100000
+Register 1 Value:00000000000000000000000000000101
+Register 2 Value:00000000000000000000000000000101
+Offset:11111111111111111111111111111100
 rd field:11111
-rt field:11111
+rt field:10000
 memToReg:0
 regWrite:0
 Branch:0
+Not Branch:1
 memWrite:0
 memRead:0
 ALUSrc:0
-RegDst:0
-ALUOP:111
+RegDst:1
+Store Byte:0
+Sign Extend:0
+ALUOP:001
+Start:True
+Done:False
+Jump:0
+Jump Address:10001100001111111111111100
+Jump Register:0
+Jump And Link:0
 
 --EXE/MEM Register--
-Branch Address:00000000000000000000000000011000
-ALU Result:None
-Register Value:11111
-Target Register:11111
-Zero:1
+Branch Address:00000000000000000000000000100000
+ALU Result:00000000000000000000000000000001
+Register Value:00000
+Target Register:00000
+Zero:0
 Branch:0
 Mem Write:0
 Mem Read:0
-Reg Write:0
+Reg Write:1
 Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
 
 --MEM/WB Register--
-ALU Result:None
+ALU Result:00000000000000000000000000000101
 Memory Read:
-Target Register:11111
-Reg Write:0
+Target Register:10010
+Reg Write:1
 Mem To Reg:0
+Done:False
 
 $fp 0
 $at 0
@@ -2124,7 +2617,462 @@ $t4 0
 $sp 0
 $k0 0
 $k1 0
-$s6 -5
+$s6 0
+$t7 0
+$s4 0
+$s5 0
+$s2 4
+$s3 0
+$s0 5
+$t6 0
+$t9 0
+$t8 0
+$s7 0
+$t3 0
+$t2 0
+$t1 0
+$t0 0
+$v1 0
+$v0 0
+$t5 0
+$zero 0
+----------------------------------------------------------
+------------------------ Cycle 30 -------------------------
+--IF/ID Register--
+Instruction:11111111111111111111111111111111
+Incremented Pc:00000000000000000000000000100000
+Start:True
+Done:False
+
+--ID/EXE Register--
+Incremented Pc:00000000000000000000000000100000
+Register 1 Value:00000000000000000000000000000000
+Register 2 Value:00000000000000000000000000000000
+Offset:11111111111111111111111111111111
+rd field:11111
+rt field:11111
+memToReg:0
+regWrite:0
+Branch:0
+Not Branch:0
+memWrite:0
+memRead:0
+ALUSrc:0
+RegDst:0
+Store Byte:0
+Sign Extend:0
+ALUOP:111
+Start:True
+Done:False
+Jump:0
+Jump Address:11111111111111111111111111
+Jump Register:0
+Jump And Link:0
+
+--EXE/MEM Register--
+Branch Address:00000000000000000000000000010000
+ALU Result:00000000000000000000000000000000
+Register Value:10000
+Target Register:10000
+Zero:1
+Branch:0
+Mem Write:0
+Mem Read:0
+Reg Write:0
+Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
+
+--MEM/WB Register--
+ALU Result:00000000000000000000000000000001
+Memory Read:
+Target Register:00000
+Reg Write:1
+Mem To Reg:0
+Done:False
+
+$fp 0
+$at 0
+$ra 0
+$gp 0
+$a0 0
+$a1 0
+$a2 0
+$a3 0
+$s1 5
+$0 0
+$t4 0
+$sp 0
+$k0 0
+$k1 0
+$s6 0
+$t7 0
+$s4 0
+$s5 0
+$s2 5
+$s3 0
+$s0 5
+$t6 0
+$t9 0
+$t8 0
+$s7 0
+$t3 0
+$t2 0
+$t1 0
+$t0 0
+$v1 0
+$v0 0
+$t5 0
+$zero 0
+----------------------------------------------------------
+------------------------ Cycle 31 -------------------------
+--IF/ID Register--
+Instruction:11111111111111111111111111111111
+Incremented Pc:00000000000000000000000000100000
+Start:True
+Done:True
+
+--ID/EXE Register--
+Incremented Pc:00000000000000000000000000100000
+Register 1 Value:00000000000000000000000000000000
+Register 2 Value:00000000000000000000000000000000
+Offset:11111111111111111111111111111111
+rd field:11111
+rt field:11111
+memToReg:0
+regWrite:0
+Branch:0
+Not Branch:0
+memWrite:0
+memRead:0
+ALUSrc:0
+RegDst:0
+Store Byte:0
+Sign Extend:0
+ALUOP:111
+Start:True
+Done:False
+Jump:0
+Jump Address:11111111111111111111111111
+Jump Register:0
+Jump And Link:0
+
+--EXE/MEM Register--
+Branch Address:00000000000000000000000000011100
+ALU Result:None
+Register Value:11111
+Target Register:11111
+Zero:1
+Branch:0
+Mem Write:0
+Mem Read:0
+Reg Write:0
+Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
+
+--MEM/WB Register--
+ALU Result:00000000000000000000000000000000
+Memory Read:
+Target Register:10000
+Reg Write:0
+Mem To Reg:0
+Done:False
+
+$fp 0
+$at 0
+$ra 0
+$gp 0
+$a0 0
+$a1 0
+$a2 0
+$a3 0
+$s1 5
+$0 0
+$t4 0
+$sp 0
+$k0 0
+$k1 0
+$s6 0
+$t7 0
+$s4 0
+$s5 0
+$s2 5
+$s3 0
+$s0 5
+$t6 0
+$t9 0
+$t8 0
+$s7 0
+$t3 0
+$t2 0
+$t1 0
+$t0 0
+$v1 0
+$v0 0
+$t5 0
+$zero 0
+----------------------------------------------------------
+------------------------ Cycle 32 -------------------------
+--IF/ID Register--
+Instruction:11111111111111111111111111111111
+Incremented Pc:00000000000000000000000000100000
+Start:True
+Done:True
+
+--ID/EXE Register--
+Incremented Pc:00000000000000000000000000100000
+Register 1 Value:00000000000000000000000000000000
+Register 2 Value:00000000000000000000000000000000
+Offset:11111111111111111111111111111111
+rd field:11111
+rt field:11111
+memToReg:0
+regWrite:0
+Branch:0
+Not Branch:0
+memWrite:0
+memRead:0
+ALUSrc:0
+RegDst:0
+Store Byte:0
+Sign Extend:0
+ALUOP:111
+Start:True
+Done:True
+Jump:0
+Jump Address:11111111111111111111111111
+Jump Register:0
+Jump And Link:0
+
+--EXE/MEM Register--
+Branch Address:00000000000000000000000000011100
+ALU Result:None
+Register Value:11111
+Target Register:11111
+Zero:1
+Branch:0
+Mem Write:0
+Mem Read:0
+Reg Write:0
+Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:False
+Jump And Link:0
+
+--MEM/WB Register--
+ALU Result:None
+Memory Read:
+Target Register:11111
+Reg Write:0
+Mem To Reg:0
+Done:False
+
+$fp 0
+$at 0
+$ra 0
+$gp 0
+$a0 0
+$a1 0
+$a2 0
+$a3 0
+$s1 5
+$0 0
+$t4 0
+$sp 0
+$k0 0
+$k1 0
+$s6 0
+$t7 0
+$s4 0
+$s5 0
+$s2 5
+$s3 0
+$s0 5
+$t6 0
+$t9 0
+$t8 0
+$s7 0
+$t3 0
+$t2 0
+$t1 0
+$t0 0
+$v1 0
+$v0 0
+$t5 0
+$zero 0
+----------------------------------------------------------
+------------------------ Cycle 33 -------------------------
+--IF/ID Register--
+Instruction:11111111111111111111111111111111
+Incremented Pc:00000000000000000000000000100000
+Start:True
+Done:True
+
+--ID/EXE Register--
+Incremented Pc:00000000000000000000000000100000
+Register 1 Value:00000000000000000000000000000000
+Register 2 Value:00000000000000000000000000000000
+Offset:11111111111111111111111111111111
+rd field:11111
+rt field:11111
+memToReg:0
+regWrite:0
+Branch:0
+Not Branch:0
+memWrite:0
+memRead:0
+ALUSrc:0
+RegDst:0
+Store Byte:0
+Sign Extend:0
+ALUOP:111
+Start:True
+Done:True
+Jump:0
+Jump Address:11111111111111111111111111
+Jump Register:0
+Jump And Link:0
+
+--EXE/MEM Register--
+Branch Address:00000000000000000000000000011100
+ALU Result:None
+Register Value:11111
+Target Register:11111
+Zero:1
+Branch:0
+Mem Write:0
+Mem Read:0
+Reg Write:0
+Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:True
+Jump And Link:0
+
+--MEM/WB Register--
+ALU Result:None
+Memory Read:
+Target Register:11111
+Reg Write:0
+Mem To Reg:0
+Done:False
+
+$fp 0
+$at 0
+$ra 0
+$gp 0
+$a0 0
+$a1 0
+$a2 0
+$a3 0
+$s1 5
+$0 0
+$t4 0
+$sp 0
+$k0 0
+$k1 0
+$s6 0
+$t7 0
+$s4 0
+$s5 0
+$s2 5
+$s3 0
+$s0 5
+$t6 0
+$t9 0
+$t8 0
+$s7 0
+$t3 0
+$t2 0
+$t1 0
+$t0 0
+$v1 0
+$v0 0
+$t5 0
+$zero 0
+----------------------------------------------------------
+------------------------ Cycle 34 -------------------------
+--IF/ID Register--
+Instruction:11111111111111111111111111111111
+Incremented Pc:00000000000000000000000000100000
+Start:True
+Done:True
+
+--ID/EXE Register--
+Incremented Pc:00000000000000000000000000100000
+Register 1 Value:00000000000000000000000000000000
+Register 2 Value:00000000000000000000000000000000
+Offset:11111111111111111111111111111111
+rd field:11111
+rt field:11111
+memToReg:0
+regWrite:0
+Branch:0
+Not Branch:0
+memWrite:0
+memRead:0
+ALUSrc:0
+RegDst:0
+Store Byte:0
+Sign Extend:0
+ALUOP:111
+Start:True
+Done:True
+Jump:0
+Jump Address:11111111111111111111111111
+Jump Register:0
+Jump And Link:0
+
+--EXE/MEM Register--
+Branch Address:00000000000000000000000000011100
+ALU Result:None
+Register Value:11111
+Target Register:11111
+Zero:1
+Branch:0
+Mem Write:0
+Mem Read:0
+Reg Write:0
+Mem To Register:0
+Store Byte:0
+Sign Extend:0
+Start:True
+Done:True
+Jump And Link:0
+
+--MEM/WB Register--
+ALU Result:None
+Memory Read:
+Target Register:11111
+Reg Write:0
+Mem To Reg:0
+Done:True
+
+$fp 0
+$at 0
+$ra 0
+$gp 0
+$a0 0
+$a1 0
+$a2 0
+$a3 0
+$s1 5
+$0 0
+$t4 0
+$sp 0
+$k0 0
+$k1 0
+$s6 0
 $t7 0
 $s4 0
 $s5 0
