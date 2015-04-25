@@ -1,0 +1,13 @@
+.data
+4 128
+.start 0x010
+beq $s4 , $s5 , test
+test : addi $s0 , $s0 , 8
+lw $s1 , 4($s4)
+j exit
+addi $s5 , $s6 , 3
+exit : sll $t1 , $s1 , 2
+srl $t2 , $s1 , 2
+slt $t3 , $t4 , $s1
+move $s5 , $s6
+halt
