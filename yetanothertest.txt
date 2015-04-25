@@ -1,0 +1,10 @@
+.data
+4 128
+.start 0x010
+exit : addi $s1 , $s1 , 1
+addi $s2 , $s2 , 1
+addi $s3 , $s3 , 1
+bgt $s1 , $s0 , exit
+lui $s6 , 56
+sub $s7 , $s1 , $s0
+halt
