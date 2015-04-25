@@ -131,7 +131,7 @@ class pipelineSimulator(object):
 				self.executeMem.rd = self.decExReg.rt
 			else:
 				self.executeMem.rd = self.decExReg.rd
-			self.executeMem.regValue = self.decExReg.rt
+			self.executeMem.regValue = self.decExReg.reg2
 			self.executeMem.branchAddre = calculateComplement(((calculateNum(self.decExReg.offset) << 2) + int(self.decExReg.incPC , 2)))
 			# print calculateNum(self.executeMem.branchAddre)
 			# print calculateNum(self.decExReg.offset)
@@ -179,7 +179,7 @@ class pipelineSimulator(object):
 				if self.executeMem.swByte:
 					self.memory[int(self.executeMem.ALUResult , 2)] = calculateNum(unextendByte(self.executeMem.regValue))
 				else:
-					self.memory[int(self.executeMem.ALUResult , 2)] = calculateNum(self.executeMem.regValue)
+					self.memory[int(self.executeMem.ALUResult , 2)] = calculateNum(extending(self.executeMem.regValue))
 			elif(self.executeMem.memRead):
 				if self.executeMem.signExtend:
 					self.memWrite.memRead = signExtend(calculateComplement(int(self.memory[int(self.executeMem.ALUResult , 2)])))
@@ -693,6 +693,10 @@ def calculateNum(num):
 
 def extender(num):
 	return num[0] * 16 + num
+
+
+def extending(num):
+	return num[0] * (32 - len(num)) + num
 
 
 def signExtend(num):
