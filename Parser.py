@@ -15,11 +15,15 @@ class Parser(object):
 					'$s4':"10100" ,'$s5':"10101" ,'$s6':"10110" ,'$s7':"10111" ,
 					'$t8':"11000" ,'$t9':"11001" ,'$k0':"11010" ,'$k1':"11011" ,
 					'$gp':"11100" ,'$sp':"11101" ,'$fp':"11110" ,'$ra':"11111" }
+
 		self.op = { 'addi':"001000" , 'beq':"000100", 'bne':"000101" , 'lw':"100011" , 'lbu':"100100" , 
 					'sw':"101011" , 'sb':"101000" , 'lui':"001111" , 'j':"000010" , 'jal':"000010" , 'lb':"100000"}
+
 		self.func = {'add':"100000" , 'and':"100100" , 'jr':"001000" , 'nor':"100111" , 'slt':"101010" ,
 					 'sltu':"101011" , 'srl':"000010" , 'sll':"000000" , 'sub':"100010" }
+
 		self.labels = {}
+		
 		self.memory = {}
 		
 
@@ -65,7 +69,7 @@ class Parser(object):
 		if len(instr) == 1:
 			ans = "0" * 32
 		# Handling R-Type instructions
-		if instr[0] in self.noop:
+		if instr[0] in self.noop and "jr" not in instr[0]:
 			if "srl" in instr[0] or "sll" in instr[0]:
 				ans = "000000" + "00000" + self.reg[instr[2]] +  self.reg[instr[1]] + format(int(instr[3]) , '05b') + self.func[instr[0]]
 		#		print int(self.reg[instr[1]] , 2)
@@ -78,6 +82,10 @@ class Parser(object):
 			if len(bin(self.labels[instr[1]] >> 2)) < 28:
 				ans = "0" * (28 - len(bin(self.labels[instr[1]] >> 2)))
 			ans = self.op[instr[0]] + ans + bin(self.labels[instr[1]] >> 2).replace("0b" , "")
+
+		elif len(instr) == 2 and instr[0] in self.noop:
+			ans = "0" * 6 + self.reg[instr[1]] + "0" * 17 + "1" + "0" * 3
+			print ans
 
 		elif instr[0] in self.op:
 			# Handling immediate aritmatic instructions

@@ -1,5 +1,8 @@
 .data
 4 128
 .start: 010
-lui $s5 , 15
+jr $s0
+addi $s4, $s4, 5
+addi $s5 , $s5 , 10
+me : addi $s1, $s1, 10
 halt

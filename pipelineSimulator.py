@@ -12,9 +12,9 @@ class pipelineSimulator(object):
 		self.isDone = False
 		self.stall = 0
 		self.pc = calculateComplement(i.pc)
-		self.PCSrc = 0
+		self.PCSrc = "00"
 		self.reg = {'11110':0 , '00001':0, '11111':0, '11100':0, '00100':0, '00101':0, '00110':0, '00111':0, '10001':0, '00000':0
-		, '01100':0, '11101':0, '11010':0, '11011':0, '10110':-5, '01111':0, '10100':0, '10101':0, '10010':0, '10011':0, '10000':0
+		, '01100':0, '11101':0, '11010':0, '11011':0, '10110':0, '01111':0, '10100':0, '10101':0, '10010':0, '10011':0, '10000':24
 		, '01110':0, '11001':0, '11000':0, '10111':0, '01011':0, '01010':0, '01001':0, '01000':0, '00011':0, '00010':0, '01101':0
 		, '00000':0}
 		self.regs = i.getReg()
@@ -34,14 +34,18 @@ class pipelineSimulator(object):
 
 
 	def fetchStage(self):
-		if self.PCSrc:
+		print self.PCSrc	
+		if "01" in self.PCSrc:
 			pc = calculateNum(self.branchAddre)
-			print "!!!"
-			print pc
+			self.PCSrc = "00"
 			#print self.branchAddre
-		else:
+		elif "00" in self.PCSrc:
 			pc = calculateNum(self.pc)
-		#print pc
+		else:
+			print "here" + str(self.stall)
+			pc = calculateNum(self.jumpAddre)
+			self.PCSrc = "00"
+		print pc
 		if pc in self.memory and not self.stall:
 			instr = self.memory[pc]
 			if "0" * 32 in instr:
@@ -54,19 +58,21 @@ class pipelineSimulator(object):
 				self.fetchDec.start = True
 				# print calculateNum(self.pc)	
 		else:
+			# print "Here"
 			self.fetchDec.instruction = "1" * 32
 
 	def decodeStage(self):
 		if self.fetchDec.start:
 			instr = self.fetchDec.instruction
+			# print instr
 			# if "1" * 32 in instr:
 			# 	pass
 			if "0" * 32 in instr:
 				self.fetchDec.advance(self.decExReg)
 			else:
 				opcode = instr[0:6]
-				self.decExReg.reg1 = instr[6:11]
-				self.decExReg.reg2 = instr[11:16]
+				self.decExReg.reg1 = calculateComplement(self.reg[instr[6:11]])
+				self.decExReg.reg2 = calculateComplement(self.reg[instr[11:16]])
 				self.decExReg.offset = extender(instr[16:32])
 				# print instr
 				self.decExReg.rd = instr[16:21]
@@ -74,6 +80,12 @@ class pipelineSimulator(object):
 				# print self.decExReg.rt
 				self.control(opcode)
 				self.decExReg.start = True
+				self.decExReg.jumpAddre = instr[6:32:1]
+				if "001000" in self.decExReg.offset[26:32]:
+					print "here"
+					self.decExReg.jr = 1
+					self.stall = 1
+					self.decExReg.regWrite = 0
 				self.fetchDec.advance(self.decExReg)
 
 
@@ -81,16 +93,26 @@ class pipelineSimulator(object):
 		if self.decExReg.done:
 			self.decExReg.advance(self.executeMem)
 		elif self.decExReg.start:
-			src1 = calculateComplement(self.reg[self.decExReg.reg1])
+			if self.decExReg.jump:
+				self.jumpAddre = self.decExReg.incPC[0:5:1] + calculateComplement((calculateNum(self.decExReg.jumpAddre) << 2))
+				# print calculateNum(self.decExReg.incPC[0:5:1])
+				# print (calculateNum(self.decExReg.jumpAddre))
+				self.PCSrc = "11"
+			if self.decExReg.jr:
+				self.jumpAddre = self.decExReg.reg1
+				self.PCSrc = "11"
+			if self.decExReg.jump or self.decExReg.jr:
+				self.stall = 0
+			src1 = self.decExReg.reg1
 			if self.decExReg.ALUSrc:
 				src2 = self.decExReg.offset
 			else:
-				src2 = calculateComplement(self.reg[self.decExReg.reg2])
+				src2 = self.decExReg.reg2
 			if self.decExReg.RegDst:
 				self.executeMem.rd = self.decExReg.rt
 			else:
 				self.executeMem.rd = self.decExReg.rd
-			self.executeMem.regValue = self.decExReg.reg2
+			self.executeMem.regValue = self.decExReg.rt
 			self.executeMem.branchAddre = calculateComplement(((calculateNum(self.decExReg.offset) << 2) + int(self.decExReg.incPC , 2)))
 			# print calculateNum(self.executeMem.branchAddre)
 			# print calculateNum(self.decExReg.offset)
@@ -120,12 +142,12 @@ class pipelineSimulator(object):
 			self.executeMem.advance(self.memWrite)
 		if self.executeMem.start:
 			if self.executeMem.branch and self.executeMem.zero:
-				print "here"
+				#print "here"
 				self.branchAddre = self.executeMem.branchAddre
-				self.PCSrc = 1
+				self.PCSrc = "01"
 			if self.executeMem.notBranch and not self.executeMem.zero:
 				self.branchAddre = self.executeMem.branchAddre
-				self.PCSrc = 1
+				self.PCSrc = "01"
 			if self.executeMem.branch or self.executeMem.notBranch:
 				# print "!!!"
 				self.stall = 0
@@ -179,10 +201,10 @@ class pipelineSimulator(object):
 	#		print self.executeMem
 	#		print self.memWrite
 			self.fetchStage()
-			print self.fetchDec
-			print self.decExReg
-			print self.executeMem
-			print self.memWrite
+			# print self.fetchDec
+			# print self.decExReg
+			# print self.executeMem
+			# print self.memWrite
 			# print self.reg
 
 	def control(self , opcode):
@@ -200,6 +222,8 @@ class pipelineSimulator(object):
 			self.decExReg.notBranch = 0
 			self.decExReg.swByte = 0	
 			self.decExReg.signExtend = 0
+			self.decExReg.jump = 0
+			self.decExReg.jr = 0
 		#addi
 		elif "001000" in opcode:
 			self.decExReg.regWrite = 1 
@@ -214,6 +238,8 @@ class pipelineSimulator(object):
 			self.decExReg.notBranch = 0
 			self.decExReg.swByte = 0	
 			self.decExReg.signExtend = 0
+			self.decExReg.jump = 0
+			self.decExReg.jr = 0
 		# lw/lbu
 		elif "100011" in opcode or "100100" in opcode:
 			self.decExReg.regWrite = 1
@@ -228,6 +254,8 @@ class pipelineSimulator(object):
 			self.decExReg.notBranch = 0
 			self.decExReg.swByte = 0	
 			self.decExReg.signExtend = 0
+			self.decExReg.jump = 0
+			self.decExReg.jr = 0
 		# lb
 		elif "100000" in opcode:
 			self.decExReg.regWrite = 1
@@ -242,6 +270,8 @@ class pipelineSimulator(object):
 			self.decExReg.notBranch = 0
 			self.decExReg.swByte = 0	
 			self.decExReg.signExtend = 1
+			self.decExReg.jump = 0
+			self.decExReg.jr = 0
 		#sw
 		elif "101011" in opcode:
 			self.decExReg.regWrite = 0
@@ -256,6 +286,8 @@ class pipelineSimulator(object):
 			self.decExReg.notBranch = 0
 			self.decExReg.swByte = 0	
 			self.decExReg.signExtend = 0
+			self.decExReg.jump = 0
+			self.decExReg.jr = 0
 		#sb
 		elif "101000" in opcode:
 			self.decExReg.regWrite = 0
@@ -270,6 +302,8 @@ class pipelineSimulator(object):
 			self.decExReg.notBranch = 0
 			self.decExReg.swByte = 1
 			self.decExReg.signExtend = 0
+			self.decExReg.jump = 0
+			self.decExReg.jr = 0
 		#lui
 		elif "001111" in opcode:
 			self.decExReg.regWrite = 1
@@ -283,7 +317,9 @@ class pipelineSimulator(object):
 			self.decExReg.branch = 0
 			self.decExReg.notBranch = 0
 			self.decExReg.swByte = 0
-			self.decExReg.signExtend = 0	
+			self.decExReg.signExtend = 0
+			self.decExReg.jump = 0	
+			self.decExReg.jr = 0
 		#beq
 		elif "000100" in opcode:
 			self.decExReg.regWrite = 0
@@ -293,11 +329,14 @@ class pipelineSimulator(object):
 			self.decExReg.memWrite = 0
 			self.decExReg.memToReg = 0
 			self.decExReg.ALUOP = "001"
+			self.decExReg.PCSrc = 1
 			self.decExReg.branch = 1
 			self.decExReg.notBranch = 0
 			self.decExReg.swByte = 0
 			self.decExReg.signExtend = 0
 			self.stall = 1
+			self.decExReg.jump = 0
+			self.decExReg.jr = 0
 		#stall
 		elif "111111" in opcode:
 			self.decExReg.regWrite = 0
@@ -311,6 +350,8 @@ class pipelineSimulator(object):
 			self.decExReg.notBranch = 0
 			self.decExReg.swByte = 0
 			self.decExReg.signExtend = 0
+			self.decExReg.jump = 0
+			self.decExReg.jr = 0
 		# bne
 		elif "000101" in opcode:
 			self.decExReg.regWrite = 0
@@ -320,11 +361,32 @@ class pipelineSimulator(object):
 			self.decExReg.memWrite = 0
 			self.decExReg.memToReg = 0
 			self.decExReg.ALUOP = "001"
+			self.decExReg.PCSrc = 1
 			self.decExReg.branch = 0
 			self.decExReg.notBranch = 1
 			self.decExReg.swByte = 0
 			self.decExReg.signExtend = 0
 			self.stall = 1
+			self.decExReg.jump = 0
+			self.decExReg.jr = 0
+		#j
+		elif "000010" in opcode:
+			self.decExReg.regWrite = 0
+			self.decExReg.RegDst = 1
+			self.decExReg.ALUSrc = 0
+			self.decExReg.memRead = 0
+			self.decExReg.memWrite = 0
+			self.decExReg.memToReg = 0
+			self.decExReg.ALUOP = "111"
+			self.decExReg.PCSrc = 1
+			self.decExReg.branch = 0
+			self.decExReg.notBranch = 0
+			self.decExReg.swByte = 0
+			self.decExReg.signExtend = 0
+			self.stall = 1
+			self.decExReg.jump = 1
+			self.decExReg.jr = 0
+
 		
 
 class FetchDecReg(object):
@@ -369,6 +431,9 @@ class DecExReg(object):
 		self.ALUOP = ""
 		self.start = False
 		self.done = False
+		self.jump = 0
+		self.jumpAddre = ""
+		self.jr = 0
 
 	def advance(self, executeMemReg):
 		executeMemReg.memWrite = self.memWrite
@@ -405,6 +470,7 @@ class ExecuteMemReg(object):
 		self.PCSrc = 0
 		self.start = False
 		self.done = False
+		self.jump = 0
 
 	def advance(self , memWriteReg):
 		memWriteReg.ALUResult = self.ALUResult
@@ -478,6 +544,9 @@ def ALUControl(ALUOp , func):
 		# sltu
 		elif "101011" in func:
 			return "0101"
+		#jr
+		elif "001000" in func:
+			return "1111"
 
 
 def ALU(ALUcontrol ,src1 , src2):
@@ -520,6 +589,9 @@ def ALU(ALUcontrol ,src1 , src2):
 	# nor
 	elif "1100" in ALUcontrol:
 		return calculateComplement(~(calculateNum(src1) | calculateNum(src2)))
+	# jr
+	elif "1101" in ALUcontrol:
+		return src1
 	elif "1111" in ALUcontrol:
 		pass
 
@@ -541,7 +613,7 @@ def calculateComplement(num):
 
 
 def calculateNum(num):
-	#print num
+	# print num
 	if num[0] == '1':
 		newNum = num[num.find('0')::]
 		n = ""
