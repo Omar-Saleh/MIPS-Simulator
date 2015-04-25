@@ -49,14 +49,16 @@ class Parser(object):
 
 		instructions = [lines[i].replace(',' , ' ') for i in range(i , len(lines))]
 		self.scan(instructions)
-		self.instr = [self.translate(instructions[i] , i - 1) for i in range(1 , len(instructions))]
+		# self.instr = [self.translate(instructions[i] , i - 1) for i in range(1 , len(instructions))]
 		# Adding translated instructions to the main memory starting from the pc value specified by the user
-		for i in range(len(self.instr)):
-			self.memory[self.pc + (i  * 4)] = self.instr[i]
+		# for i in range(len(self.instr)):
+			# self.memory[self.pc + (i  * 4)] = self.instr[i]
+		for i in range(1 , len(instructions)):
+			self.translate(instructions[i] , i - 1)
+		self.num = len(instructions) - 1
 
 	# Translates instructions into binary
 	def translate(self , instr , count):
-		ans = ""
 		# Removing labels if there is any
 		split_Index = instr.find(':')
 		if split_Index > 0:
@@ -70,45 +72,44 @@ class Parser(object):
 
 		# Halt
 		if len(instr) == 1 and "halt" in instr[0].lower():
-			ans = "0" * 32
+			self.memory[self.pc + ((count + self.extra) * 4)] = "0" * 32
 		# Handling pseudo
 		if instr[0] in self.pseudo:
-			ans = self.handlePseudo(instr)
+			self.handlePseudo(instr , count)
 		# Handling R-Type instructions
 		if instr[0] in self.noop and "jr" not in instr[0]:
 			if "srl" in instr[0] or "sll" in instr[0]:
-				ans = "000000" + "00000" + self.reg[instr[2]] +  self.reg[instr[1]] + format(int(instr[3]) , '05b') + self.func[instr[0]]
+				self.memory[self.pc + ((count + self.extra) * 4)] = "000000" + "00000" + self.reg[instr[2]] +  self.reg[instr[1]] + format(int(instr[3]) , '05b') + self.func[instr[0]]
 		#		print int(self.reg[instr[1]] , 2)
 		#		print ans
 			else:
-				ans =  "000000"  + self.reg[instr[2]] + self.reg[instr[3]] + self.reg[instr[1]] + "00000" + self.func[instr[0]]
+				self.memory[self.pc + ((count + self.extra) * 4)] =  "000000"  + self.reg[instr[2]] + self.reg[instr[3]] + self.reg[instr[1]] + "00000" + self.func[instr[0]]
 
 		# Handling Jumps	
 		elif len(instr) == 2 and instr[0] in self.op:
 			if len(bin(self.labels[instr[1]] >> 2)) < 28:
 				ans = "0" * (28 - len(bin(self.labels[instr[1]] >> 2)))
-			ans = self.op[instr[0]] + ans + bin(self.labels[instr[1]] >> 2).replace("0b" , "")
+			self.memory[self.pc + ((count + self.extra) * 4)] = self.op[instr[0]] + ans + bin(self.labels[instr[1]] >> 2).replace("0b" , "")
 
 		elif len(instr) == 2 and instr[0] in self.noop:
-			ans = "0" * 6 + self.reg[instr[1]] + "0" * 17 + "1" + "0" * 3
-			print ans
+			self.memory[self.pc + ((count + self.extra) * 4)] = "0" * 6 + self.reg[instr[1]] + "0" * 17 + "1" + "0" * 3
+			# print ans
 
 		elif instr[0] in self.op:
 			# Handling immediate aritmatic instructions
 			if instr[0] == 'addi':
 			#	print calculateOffSet(int(instr[3]))
-				ans = self.op[instr[0]] + self.reg[instr[2]] + self.reg[instr[1]] + calculateOffSet(int(instr[3]))
+				self.memory[self.pc + ((count + self.extra) * 4)] = self.op[instr[0]] + self.reg[instr[2]] + self.reg[instr[1]] + calculateOffSet(int(instr[3]))
 
 			# Handling Memory Loads/Stores
 			elif instr[0] == 'lw' or instr[0] == 'sw' or instr[0] ==  'lbu' or instr[0] == 'sb' or instr[0] == 'lb':
 				target = instr[2].replace('(' , ' ').replace(')' , ' ').split()
-				ans = self.op[instr[0]] + self.reg[target[1]] + self.reg[instr[1]] + ans + calculateOffSet(int(target[0]))
+				self.memory[self.pc + ((count + self.extra) * 4)] = self.op[instr[0]] + self.reg[target[1]] + self.reg[instr[1]] + ans + calculateOffSet(int(target[0]))
 			elif instr[0] == 'lui':
-				ans = self.op[instr[0]] + "00000" + self.reg[instr[1]] + calculateOffSet(int(instr[2]))
+				self.memory[self.pc + ((count + self.extra) * 4)] = self.op[instr[0]] + "00000" + self.reg[instr[1]] + calculateOffSet(int(instr[2]))
 			# Handling branches
 			else:
-				ans = self.op[instr[0]] + self.reg[instr[1]] + self.reg[instr[2]] + calculateOffSet(((self.labels[instr[3]] - self.pc - (count * 4) - 4) >> 2))
-		return ans
+				self.memory[self.pc + ((count + self.extra) * 4)] = self.op[instr[0]] + self.reg[instr[1]] + self.reg[instr[2]] + calculateOffSet(((self.labels[instr[3]] - self.pc - ((count + self.extra) * 4) - 4) >> 2))
 
 	# Index labels to their addresses
 	def scan(self , lines):
@@ -124,16 +125,27 @@ class Parser(object):
 			elif ':' in line:
 				self.labels[line.replace(':' , '').split()[0]] = counter
 
-	def handlePseudo(self , instr):
+	def handlePseudo(self , instr , count):
 		if "move" in instr[0]:
-			return self.op['addi'] + self.reg[instr[2]] + self.reg[instr[1]] + "0" * 16
+			self.memory[self.pc + ((count + self.extra) * 4)] = self.op['addi'] + self.reg[instr[2]] + self.reg[instr[1]] + "0" * 16
 		elif "blt" in instr[0]:
+			self.memory[self.pc + ((count + self.extra) * 4)] =  "000000"  + self.reg[instr[1]] + self.reg[instr[2]] + "00001" + "00000" + self.func['slt']
 			self.extra = self.extra + 1
-
+			self.memory[self.pc + ((count + self.extra) * 4)] = "1" * 32
+			self.extra = self.extra + 1
+			self.memory[self.pc + ((count + self.extra) * 4)] = "1" * 32
+			self.extra = self.extra + 1
+			self.memory[self.pc + ((count + self.extra) * 4)] = self.op['bne'] + "00001" + "00000" + calculateOffSet(((self.labels[instr[3]] - self.pc - ((count + self.extra) * 4) - 4) >> 2))
 		elif "bgt" in instr[0]:
+			self.memory[self.pc + ((count + self.extra) * 4)] =  "000000"  + self.reg[instr[1]] + self.reg[instr[2]] + "00001" + "00000" + self.func['slt']
 			self.extra = self.extra + 1
+			self.memory[self.pc + ((count + self.extra) * 4)] = "1" * 32
+			self.extra = self.extra + 1
+			self.memory[self.pc + ((count + self.extra) * 4)] = "1" * 32
+			self.extra = self.extra + 1
+			self.memory[self.pc + ((count + self.extra) * 4)] = self.op['beq'] + "00001" + "00000" + calculateOffSet(((self.labels[instr[3]] - self.pc - ((count + self.extra) * 4) - 4) >> 2))
 
-	
+
 	def getMemory(self):
 		return self.memory
 
@@ -151,9 +163,10 @@ def calculateOffSet(num):
 	return (format(num if num >= 0 else (1 << 16) + num, '016b'));
 
 
-#i = Parser("text.txt")
-#print i.reg.values()
+#i = Parser("loop.txt")
 #print i.memory
+#print i.reg.values()
+#print i.memoryW
 # print i.labels
 # x = calculateOffSet(7)
 # test = x[x.find('0')::]

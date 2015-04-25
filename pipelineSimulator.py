@@ -5,8 +5,8 @@ class pipelineSimulator(object):
 
 	def __init__(self):
 
-		#filename = raw_input("Please Write the name of the desired file to execute : ")g
-		i = Parser("text.txt")
+		filename = raw_input("Please Write the name of the desired file to execute : ")
+		i = Parser(filename)
 		self.memory = i.getMemory()
 		self.cycles = 0
 		self.isDone = False
@@ -26,6 +26,17 @@ class pipelineSimulator(object):
 		open('ans.txt', 'w').close()
 		self.file = open("ans.txt" , "r+")
 		self.run()
+		fetch_latency = int(raw_input("Please Write the latency in the fetch stage: "))
+		decode_latency = int(raw_input("Please Write the latency in the decode stage: "))
+		execute_latency = int(raw_input("Please Write the latency in the execute stage: "))
+		memory_latency = int(raw_input("Please Write the latency in the data stage: "))
+		writeback_latency = int(raw_input("Please Write the latency in the write back stage: "))
+		Time_Elapsed_By_pipeline = self.cycles * (max(fetch_latency , decode_latency , max(execute_latency , memory_latency , writeback_latency)))
+		Time_Elapsed_By_single = i.num * (fetch_latency + decode_latency + execute_latency + memory_latency + writeback_latency)
+		self.file.write("Time Elapsed by Pipeline = " + str(Time_Elapsed_By_pipeline) + '\n')
+		self.file.write("Time Elapsed by Single Cycle = " + str(Time_Elapsed_By_single) + '\n')
+		improv = float(Time_Elapsed_By_pipeline/Time_Elapsed_By_single) * 100
+		self.file.write("This represents a " + str(improv) + "improvment")
 		self.file.close()
 
 
@@ -86,7 +97,7 @@ class pipelineSimulator(object):
 				self.control(opcode)
 				self.decExReg.start = True
 				self.decExReg.jumpAddre = instr[6:32:1]
-				if "001000" in self.decExReg.offset[26:32]:
+				if "001000" in self.decExReg.offset[26:32] and "0" * 6 in instr[0:6]:
 					self.decExReg.jr = 1
 					self.stall = 1
 					self.decExReg.regWrite = 0
@@ -142,6 +153,7 @@ class pipelineSimulator(object):
 			# print src2
 			self.executeMem.ALUResult = ALU(ALUcontrol , src1 , src2)
 			self.executeMem.zero = Zero(src1 , src2)
+			# print src1 + src2
 			self.executeMem.start = True
 			self.decExReg.advance(self.executeMem)
 
@@ -150,6 +162,7 @@ class pipelineSimulator(object):
 		if self.executeMem.done:
 			self.executeMem.advance(self.memWrite)
 		if self.executeMem.start:
+			# print str(self.executeMem.notBranch) + str(self.executeMem.zero)
 			if self.executeMem.branch and self.executeMem.zero:
 				# print "here"
 				self.branchAddre = self.executeMem.branchAddre
@@ -179,6 +192,7 @@ class pipelineSimulator(object):
 			self.isDone = True
 		if self.memWrite.start:
 			if(self.memWrite.regWrite):
+				# print self.memWrite.ALUResult
 				if(self.memWrite.jal):
 					self.reg['11111'] =  calculateNum(self.memWrite.ALUResult)
 				if(self.memWrite.memToReg):
